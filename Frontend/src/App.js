@@ -1,5 +1,13 @@
+import Main from "./components/Main/Main";
+import Navigation from "./components/Nativation/Navigation";
+
 function App() {
-  return <div className="App">Darwich app</div>;
+  return (
+    <>
+      <Navigation />
+      <Main />
+    </>
+  );
 }
 
 export default App;
