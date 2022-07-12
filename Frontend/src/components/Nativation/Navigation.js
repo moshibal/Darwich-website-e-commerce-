@@ -5,7 +5,7 @@ const Navigation = () => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
-        <Navbar.Brand href="#home">Darwich Meats</Navbar.Brand>
+        <Navbar.Brand href="#home">Darwich Meats & CO</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
@@ -20,8 +20,13 @@ const Navigation = () => {
             </NavDropdown>
           </Nav>
           <Nav>
-            <Nav.Link href="#">Login</Nav.Link>
-            <Nav.Link href="#">Cart</Nav.Link>.
+            <Nav.Link href="/login">
+              <i class="fa-solid fa-user"></i> Login
+            </Nav.Link>
+            <Nav.Link href="#">
+              <i class="fa-solid fa-cart-shopping"></i> Cart
+            </Nav.Link>
+            .
           </Nav>
         </Navbar.Collapse>
       </Container>

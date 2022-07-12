@@ -10,10 +10,37 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
-  opacity: 0.5;
 }
 .bgVedioContent {
   height: 100%;
   width: 100%;
   object-fit: cover;
+}
+.content {
+  position: relative;
+  z-index: 1;
+  min-height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: beige;
+  opacity: 0.5;
+}
+.promiseText {
+  max-width: fit-content;
+}
+li {
+  list-style: none;
+}
+div a {
+  text-decoration: none;
+}
+.special {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  min-height: 7rem;
+  align-self: flex-end;
+  width: 100%;
+  background-color: beige;
 }
