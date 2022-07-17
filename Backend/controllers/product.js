@@ -1,5 +1,6 @@
 import product from "../models/product.js";
 import { specialProduct } from "../models/product.js";
+
 export const getAllProducts = async (req, res, next) => {
   try {
     const products = await product.find();
@@ -26,7 +27,6 @@ export const getSpecialProducts = async (req, res, next) => {
 };
 export const postSpecialProduct = async (req, res, next) => {
   try {
-    console.log(req.body);
     const productDetails = req.body;
     const product = await specialProduct.create(productDetails);
     res.status(201).json(product);

@@ -1,0 +1,39 @@
+.main {
+  display: flex;
+  background-color: aqua;
+  min-height: 90vh;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(to right bottom, #dad992, #e6df9a);
+  clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
+}
+.form {
+  background-color: beige;
+  min-height: 70vh;
+  min-width: 70vw;
+  display: flex;
+  justify-content: center;
+
+  align-items: center;
+  clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
+}
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+input {
+  display: block;
+  margin-bottom: 0.5rem;
+  min-width: 50vw;
+}
+.formButton {
+  min-width: 25vw;
+}
+span {
+  font-size: larger;
+  display: inline-block;
+
+  border-bottom: solid black;
+}

@@ -5,8 +5,9 @@ import {
   getSpecialProducts,
   postSpecialProduct,
 } from "../controllers/product.js";
+import { auth } from "../middleware/auth.js";
 const router = express.Router();
-router.get("/", getAllProducts);
+router.get("/", auth, getAllProducts);
 router.get("/available", getAvailableProducts);
 router.get("/special", getSpecialProducts);
 router.post("/special", postSpecialProduct);

@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
 const productSchema = new mongoose.Schema({
   name: {
-    type: "String",
+    type: String,
     required: true,
   },
   price: {
-    type: "Number",
+    type: Number,
     required: true,
   },
   imageUri: {
-    type: "String",
+    type: String,
     required: true,
   },
   availabitity: {
-    type: "Boolean",
+    type: Boolean,
     default: "true",
   },
 });
@@ -21,10 +21,10 @@ const product = mongoose.model("products", productSchema);
 export default product;
 const specialProductSchema = new mongoose.Schema({
   special: {
-    type: "Boolean",
+    type: Boolean,
   },
   message: {
-    type: "String",
+    type: String,
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
