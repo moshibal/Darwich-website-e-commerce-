@@ -1,0 +1,11 @@
+.middleDiv {
+  min-height: 80vh;
+}
+.copyright {
+  display: flex;
+
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.5rem;
+  background-color: aquamarine;
+}

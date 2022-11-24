@@ -1,7 +1,16 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/login-slice";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 const Navigation = () => {
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.user);
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -20,13 +29,36 @@ const Navigation = () => {
             </NavDropdown>
           </Nav>
           <Nav>
-            <Nav.Link href="/login">
-              <i class="fa-solid fa-user"></i> Login
+            {userInfo ? (
+              <NavDropdown title={userInfo.data.name} id="username">
+                <NavDropdown.Item href="/profile">My Profile</NavDropdown.Item>
+
+                <NavDropdown.Item onClick={logoutHandler}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Nav.Link href="/login">
+                <i className="fa-solid fa-user"></i> Login
+              </Nav.Link>
+            )}
+
+            <Nav.Link href="/cart">
+              <i className="fa-solid fa-cart-shopping"></i> Cart
             </Nav.Link>
-            <Nav.Link href="#">
-              <i class="fa-solid fa-cart-shopping"></i> Cart
-            </Nav.Link>
-            .
+            {userInfo && userInfo.data.isAdmin && (
+              <NavDropdown title="Admin" id="adminmenu">
+                <LinkContainer to="/admin/userlist">
+                  <NavDropdown.Item>Users</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/admin/productlist">
+                  <NavDropdown.Item>Products</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/admin/orderlist">
+                  <NavDropdown.Item>Orders</NavDropdown.Item>
+                </LinkContainer>
+              </NavDropdown>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

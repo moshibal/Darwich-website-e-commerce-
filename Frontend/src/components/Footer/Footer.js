@@ -26,20 +26,20 @@ const Footer = () => {
           <h3>Darwich Meats & CO</h3>
 
           <h3>
-            <i class="fa-solid fa-phone"></i> 983742939292
+            <i className="fa-solid fa-phone"></i> 983742939292
           </h3>
           <h3>
-            <i class="fa-solid fa-envelope"></i> 3darwich@gmail.com
+            <i className="fa-solid fa-envelope"></i> 3darwich@gmail.com
           </h3>
           <div></div>
         </div>
         <div>
           <h2>We accept</h2>
           <h3>
-            <i class="fa-brands fa-cc-amex"></i> AMex
+            <i className="fa-brands fa-cc-amex"></i> AMex
           </h3>
           <h3>
-            <i class="fa-solid fa-credit-card"></i> Credit Card
+            <i className="fa-solid fa-credit-card"></i> Credit Card
           </h3>
         </div>
       </div>

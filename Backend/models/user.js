@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
   password: {
     type: String,
     required: [true, "Please provide your password"],
@@ -62,7 +66,7 @@ userSchema.methods.createToken = function () {
 userSchema.methods.checkPassword = async (password, hashpassword) => {
   return await bcrypt.compare(password, hashpassword);
 };
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
 
 //validate function to validate user data.
@@ -75,6 +79,7 @@ export const validateUser = function (user) {
         tlds: { allow: ["com", "net"] },
       })
       .required(),
+
     password: Joi.string().min(8).required(),
     passwordConfirm: Joi.string().min(8).required(),
   });

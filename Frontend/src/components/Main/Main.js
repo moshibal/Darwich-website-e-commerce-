@@ -9,14 +9,15 @@ const Main = () => {
   const [specialProducts, setSpecialProduct] = useState([]);
   const fetchSpecialProduct = async () => {
     const response = await axios.get("http://localhost:4000/products/special");
+
     if (response.status === 200) {
       setSpecialProduct(response.data);
     }
   };
 
   useEffect(() => {
-    fetchSpecialProduct();
     try {
+      fetchSpecialProduct();
     } catch (error) {
       console.log(error);
     }
@@ -56,13 +57,13 @@ const Main = () => {
             <div className={styles.special}>
               <h2>HEY, WE GOT SPECIALS TODAY.</h2>
               {specialProducts.map((item) => (
-                <>
+                <div key={item.product.name}>
                   <h3>
                     {item.product.name}{" "}
                     <span>normally {item.product.price} per kilo.</span>
                   </h3>
                   <p>{item.message}</p>
-                </>
+                </div>
               ))}
               <Link to="/products/special">Check Out All Specials</Link>
             </div>

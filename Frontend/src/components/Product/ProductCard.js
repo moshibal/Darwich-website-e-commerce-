@@ -1,20 +1,29 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 
-const ProductCard = ({ name, price, imageUri, availabity }) => {
- 
+import Card from "react-bootstrap/Card";
+import styles from "./Product.module.css";
+
+const ProductCard = ({
+  name,
+  price,
+  imageUri,
+  availabity,
+  description,
+  _id,
+}) => {
   return (
-    <Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" src={imageUri} />
+    <Card className="my-3 p-3 rounded">
+      <a href={`/products/${_id}`}>
+        <Card.Img className={styles.image} variant="top" src={imageUri} />
+      </a>
       <Card.Body>
-        <Card.Title>{name}</Card.Title>
-        <Card.Subtitle>$ {price}</Card.Subtitle>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">More Details</Button>
+        <a href={`/products/${_id}`}>
+          <Card.Title as="div">
+            <strong>{name}</strong>
+          </Card.Title>
+          <Card.Subtitle>$ {price}</Card.Subtitle>
+        </a>
+        <Card.Text>{description}</Card.Text>
       </Card.Body>
     </Card>
   );

@@ -4,6 +4,7 @@
   min-height: 90vh;
   justify-content: center;
   align-items: center;
+
   background-image: linear-gradient(to right bottom, #dad992, #e6df9a);
   clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
 }
@@ -12,6 +13,7 @@
   min-height: 70vh;
   min-width: 70vw;
   display: flex;
+  flex-direction: column;
   justify-content: center;
 
   align-items: center;

@@ -12,26 +12,18 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
   availabitity: {
     type: Boolean,
     default: "true",
   },
 });
-const product = mongoose.model("products", productSchema);
-export default product;
-const specialProductSchema = new mongoose.Schema({
-  special: {
-    type: Boolean,
-  },
-  message: {
-    type: String,
-  },
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "products",
-  },
-});
-export const specialProduct = mongoose.model(
-  "SpecialProduct",
-  specialProductSchema
-);
+const productModel = mongoose.model("Product", productSchema);
+
+export default productModel;

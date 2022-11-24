@@ -1,36 +1,43 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 
 import ProductCard from "./ProductCard";
+import Loader from "../Utility/Loader";
+import Message from "../Utility/Message";
+import { Col, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../store/product-slice";
 
 const Product = () => {
-  const [productList, setProductList] = useState([]);
-  const fetchProducts = async () => {
-    const results = await axios.get("http://localhost:4000/products");
+  const dispatch = useDispatch();
+  const { products, loading, message } = useSelector((state) => state.product);
 
-    if (results.status === 200) {
-      setProductList(results.data);
-    }
-  };
   useEffect(() => {
-    try {
-      fetchProducts();
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+    dispatch(fetchProducts());
+  }, [dispatch]);
   return (
-    <div>
-      {productList.map((item, idex) => (
-        <ProductCard
-          key={item.name}
-          name={item.name}
-          price={item.price}
-          availabity={item.availabity}
-          imageUri={item.imageUri}
-        />
-      ))}
-    </div>
+    <>
+      <h1>All the products</h1>
+      {loading ? (
+        <Loader />
+      ) : message ? (
+        <Message variant="danger">{message}</Message>
+      ) : (
+        <Row>
+          {products.map((item) => (
+            <Col sm={6} md={4} lg={3} key={item.name}>
+              <ProductCard
+                _id={item._id}
+                name={item.name}
+                price={item.price}
+                availabity={item.availabity}
+                imageUri={item.imageUri}
+                description={item.description}
+              />
+            </Col>
+          ))}
+        </Row>
+      )}
+    </>
   );
 };
 
