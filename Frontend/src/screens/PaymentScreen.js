@@ -45,7 +45,10 @@ const PaymentScreen = () => {
         <label htmlFor="stripe">Stripe</label>
         <br></br>
 
-        <button onClick={submitHandler} className="btn btn-block btn-dark">
+        <button
+          onClick={submitHandler}
+          className="btn btn-success p-3 btn-lg fs-3"
+        >
           Continue..
         </button>
       </form>

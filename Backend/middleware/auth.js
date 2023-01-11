@@ -3,6 +3,7 @@ import User from "../models/user.js";
 import AppError from "../utilities/appError.js";
 export const auth = async (req, res, next) => {
   //check if the authorization header is sent or not
+
   let token;
   if (
     req.headers.authorization &&
@@ -31,19 +32,7 @@ export const auth = async (req, res, next) => {
       )
     );
   }
-  //check if the password is changed after the token being created.
-  //just for now skipping this password changed condition....will come back
-  // if (
-  //   parseInt(user.passwordIssuedTime.getTime() / 1000, 10) - 1000 >
-  //   decoded.iat
-  // ) {
-  //   next(
-  //     new AppError(
-  //       "Password has been changed after the token was generated, please login again.",
-  //       401
-  //     )
-  //   );
-  // }
+
   req.user = user;
   next();
 };

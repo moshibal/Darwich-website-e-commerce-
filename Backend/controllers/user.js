@@ -8,8 +8,16 @@ export const getAllUser = async (req, res, next) => {
 export const getMe = async (req, res, next) => {
   res.send(req.user);
 };
+export const getUserById = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new AppError("user doesnot exist", 401));
+  }
+  res.status(200).json(user);
+});
 export const updatePassword = asyncHandler(async (req, res, next) => {
   const password = req.body.oldPassword;
+  console.log(req.body);
 
   //get user from the collections
   const user = await User.findById(req.user._id).select("+password");
@@ -47,6 +55,34 @@ export const updateMe = asyncHandler(async (req, res, next) => {
 
   res.json({
     token: updatedUser.createToken(),
+    name: updatedUser.name,
+    email: updatedUser.email,
+    isAdmin: updatedUser.isAdmin,
+    id: updatedUser._id,
+  });
+});
+export const deleteUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    await user.remove();
+    res.json({ message: "User deleted." });
+  } else {
+    next(new AppError("the user with this id could not be found", 404));
+  }
+});
+
+export const updateUserAdmin = asyncHandler(async (req, res, next) => {
+  const updateObject = {
+    email: req.body.email,
+    name: req.body.name,
+    isAdmin: req.body.admin,
+  };
+
+  let updatedUser = await User.findByIdAndUpdate(req.body._id, updateObject, {
+    new: true,
+  });
+
+  res.json({
     name: updatedUser.name,
     email: updatedUser.email,
     isAdmin: updatedUser.isAdmin,

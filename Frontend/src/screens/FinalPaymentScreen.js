@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../components/Utility/checkoutStep";
 import Message from "../components/Utility/Message";
+import { resetCartAction } from "../store/cart-slice";
 import { createOrder } from "../store/order-slice";
 const FinalPaymentScreen = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const FinalPaymentScreen = () => {
 
   const placeOrderHandler = () => {
     dispatch(createOrder(orderdetails));
+    dispatch(resetCartAction());
   };
   return (
     <>
@@ -89,7 +91,10 @@ const FinalPaymentScreen = () => {
                   ))}
                 </ListGroup>
               )}
-              <Link to={"/products"} className="btn btn-block btn-dark">
+              <Link
+                to={"/products"}
+                className="btn btn-success p-3 btn-lg fs-4"
+              >
                 ADD MORE ITEMS
               </Link>
             </ListGroup.Item>
@@ -131,7 +136,7 @@ const FinalPaymentScreen = () => {
               <ListGroup.Item>
                 <Button
                   type="button"
-                  className="btn-block"
+                  className="btn btn-success p-3 btn-lg fs-3"
                   disabled={carts.length === 0}
                   onClick={placeOrderHandler}
                 >

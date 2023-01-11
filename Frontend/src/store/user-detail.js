@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const initialState = { userDetails: {}, loading: false, success: false };
+import { login } from "./login-slice";
+const initialState = {
+  userDetails: {},
+  loading: false,
+  success: false,
+  profileUpdateSuccess: false,
+};
 const userDetailSlice = createSlice({
   name: "userDetailSlice",
   initialState: initialState,
@@ -13,14 +19,21 @@ const userDetailSlice = createSlice({
       state.userDetails = action.payload.userdetails;
       state.success = true;
     },
+
     userFail(state, action) {
       state.loading = false;
       state.userDetails = {};
-      state.message = action.payload.message;
+      state.error = action.payload.error;
+    },
+    userProfileUpdate(state, action) {
+      state.loading = false;
+      state.userDetails = action.payload.userdetails;
+      state.profileUpdateSuccess = true;
     },
   },
 });
-const { userRequest, userSuccess, userFail } = userDetailSlice.actions;
+const { userRequest, userSuccess, userFail, userProfileUpdate } =
+  userDetailSlice.actions;
 export const getUserDetails = () => {
   return async (dispatch, getState) => {
     try {
@@ -56,6 +69,7 @@ export const updateProfile = (updatingdata = null, updatePassword = null) => {
           Authorization: `Bearer ${userInfo.data.token}`,
         },
       };
+
       if (updatingdata) {
         const { data } = await axios.patch(
           "http://localhost:4000/users/updateMe",
@@ -63,7 +77,8 @@ export const updateProfile = (updatingdata = null, updatePassword = null) => {
           config
         );
         const userdetails = data;
-        dispatch(userSuccess({ userdetails }));
+        dispatch(userProfileUpdate({ userdetails }));
+        dispatch(login(updatingdata.email, updatingdata.password));
       }
 
       if (updatePassword) {
@@ -73,10 +88,14 @@ export const updateProfile = (updatingdata = null, updatePassword = null) => {
           config
         );
         const userdetails = data;
-        dispatch(userSuccess({ userdetails }));
+        dispatch(userProfileUpdate({ userdetails }));
       }
     } catch (error) {
-      dispatch(userFail({ message: "failed to fetch the products" }));
+      if (error.response.data) {
+        dispatch(userFail({ error: error.response.data.message }));
+      } else {
+        dispatch(userFail({ error: error.message }));
+      }
     }
   };
 };

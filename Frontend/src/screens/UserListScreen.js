@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsersList } from "../store/userList-slice";
+import { fetchUsersList, deleteUser } from "../store/userList-slice";
 import Message from "../components/Utility/Message";
 import Loader from "../components/Utility/Loader";
 import Wraper from "../components/Utility/Wraper";
@@ -16,16 +16,18 @@ const UserListScreen = () => {
   const {
     userInfo: { data },
   } = useSelector((state) => state.user);
-  console.log(data);
+
   useEffect(() => {
-    if (data.isAdmin) {
+    if (data && data?.isAdmin) {
       dispatch(fetchUsersList());
     } else {
       navigate("/login");
     }
   }, [dispatch, navigate, data]);
   const deleteHandler = (id) => {
-    console.log("deleted");
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteUser(id));
+    }
   };
   return (
     <>
@@ -65,7 +67,7 @@ const UserListScreen = () => {
                     )}
                   </td>
                   <td>
-                    <LinkContainer to={`user/${user._id}/edit`}>
+                    <LinkContainer to={`/admin/userlist/${user._id}/edit`}>
                       <Button variant="light" className="btn-sm">
                         <i className="fas fa-edit"></i>
                       </Button>

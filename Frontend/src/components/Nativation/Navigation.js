@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/login-slice";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-
+import SearchBox from "../Utility/SearchBox";
 const Navigation = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user);
@@ -12,24 +12,22 @@ const Navigation = () => {
   };
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      variant="dark"
+      className="p-4"
+    >
       <Container>
-        <Navbar.Brand href="#home">Darwich Meats & CO</Navbar.Brand>
+        <Navbar.Brand href="/" className="fs-2">
+          Darwich Meats & CO
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#">About Us</Nav.Link>
-            <Nav.Link href="#">Contact Us</Nav.Link>
-            <NavDropdown title="Category" id="collasible-nav-dropdown">
-              <NavDropdown.Item href="#">Beef</NavDropdown.Item>
-              <NavDropdown.Item href="#">Lamb</NavDropdown.Item>
-              <NavDropdown.Item href="#chicken">Chicken</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#">Other Items</NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
           <Nav>
-            {userInfo ? (
+            <SearchBox />
+            {userInfo && userInfo?.data?.name ? (
               <NavDropdown title={userInfo.data.name} id="username">
                 <NavDropdown.Item href="/profile">My Profile</NavDropdown.Item>
 
@@ -46,7 +44,7 @@ const Navigation = () => {
             <Nav.Link href="/cart">
               <i className="fa-solid fa-cart-shopping"></i> Cart
             </Nav.Link>
-            {userInfo && userInfo.data.isAdmin && (
+            {userInfo && userInfo?.data?.isAdmin && (
               <NavDropdown title="Admin" id="adminmenu">
                 <LinkContainer to="/admin/userlist">
                   <NavDropdown.Item>Users</NavDropdown.Item>

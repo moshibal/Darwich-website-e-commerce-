@@ -12,12 +12,20 @@ const Wraper = ({ children }) => {
   };
   return (
     <div className={styles.main}>
-      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-        <Container>
-          <Navbar.Brand href="/">Darwich Meats & CO</Navbar.Brand>
+      <Navbar
+        collapseOnSelect
+        expand="lg"
+        bg="dark"
+        variant="dark"
+        className="p-4"
+      >
+        <Container className={styles.navContainer}>
+          <Navbar.Brand href="/" className="fs-2">
+            Darwich Meats & CO
+          </Navbar.Brand>
 
           <Nav>
-            {userInfo ? (
+            {userInfo && userInfo?.data?.name ? (
               <NavDropdown title={userInfo.data.name} id="username">
                 <NavDropdown.Item href="/profile">My Profile</NavDropdown.Item>
 
@@ -36,6 +44,7 @@ const Wraper = ({ children }) => {
           </Nav>
         </Container>
       </Navbar>
+
       <div className={styles.middleDiv}>{children}</div>
 
       <div className={styles.copyright}>

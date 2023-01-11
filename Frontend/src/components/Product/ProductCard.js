@@ -9,6 +9,7 @@ const ProductCard = ({
   imageUri,
   availabity,
   description,
+  specialPrice,
   _id,
 }) => {
   return (
@@ -21,7 +22,26 @@ const ProductCard = ({
           <Card.Title as="div">
             <strong>{name}</strong>
           </Card.Title>
-          <Card.Subtitle>$ {price}</Card.Subtitle>
+          {specialPrice ? (
+            <>
+              <Card.Subtitle className={styles.lineThrough}>
+                $ {price}
+              </Card.Subtitle>
+              <Card.Subtitle className="fs-4 font-weight-bold">
+                <span>Special price $ {specialPrice} only.</span>
+                <span className="ms-3 fs-3">
+                  {availabity ? "In Stock" : "Out of Stock"}
+                </span>
+              </Card.Subtitle>
+            </>
+          ) : (
+            <Card.Subtitle className="fs-4 font-weight-bold">
+              <span>$ {price}</span>
+              <span className="ms-3">
+                {availabity ? "In Stock" : "Out of Stock"}
+              </span>
+            </Card.Subtitle>
+          )}
         </a>
         <Card.Text>{description}</Card.Text>
       </Card.Body>

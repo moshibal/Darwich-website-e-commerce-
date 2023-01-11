@@ -25,9 +25,12 @@ const cartSlice = createSlice({
       );
       state.totalQuantity = state.totalQuantity - 1;
     },
+    resetCart(state) {
+      state.cartLists = [];
+    },
   },
 });
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, resetCart } = cartSlice.actions;
 export const cartRequest = (productId, qty) => {
   return async (dispatch, getState) => {
     try {
@@ -42,13 +45,13 @@ export const cartRequest = (productId, qty) => {
       const { data } = await axios.get(
         `http://localhost:4000/products/${productId}`
       );
-      console.log(data);
 
       dispatch(
         addToCart({
           id: data._id,
           name: data.name,
           imageUri: data.imageUri,
+          specialPrice: data.specialPrice,
           price: data.price,
           qty: qty,
         })
@@ -69,6 +72,12 @@ export const deleteItem = (id) => {
       "cartItems",
       JSON.stringify(getState().cart.cartLists)
     );
+  };
+};
+export const resetCartAction = () => {
+  return (dispatch) => {
+    dispatch(resetCart());
+    localStorage.setItem("cartItems", []);
   };
 };
 export default cartSlice.reducer;

@@ -13,17 +13,24 @@ import { Link } from "react-router-dom";
 function ProfileScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  //login info
   const {
     userInfo: { data },
   } = useSelector((state) => state.user);
-
-  const { userDetails } = useSelector((state) => state.userDetails);
+  //user Info
+  const {
+    userDetails,
+    profileUpdateSuccess,
+    error: profileUpdateError,
+  } = useSelector((state) => state.userDetails);
+  //order Info
   const {
     orders,
     loading: orderListLoading,
     error: orderListError,
   } = useSelector((state) => state.myOrderList);
-
+  console.log(orders);
+  //input state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +42,7 @@ function ProfileScreen() {
     if (!data) {
       navigate("/login");
     } else {
-      if (!userDetails) {
+      if (userDetails && !userDetails?.name) {
         dispatch(getUserDetails());
         dispatch(listMyOrders());
       } else {
@@ -44,22 +51,32 @@ function ProfileScreen() {
       }
     }
   }, [data, userDetails, navigate, dispatch]);
+  useEffect(() => {
+    setPassword("");
+    setNewPassword("");
+    setPasswordConfirm("");
+  }, [profileUpdateSuccess]);
+  //update handler
   const updateHandler = (e) => {
     e.preventDefault();
-
-    const updatingProfile = { name, email };
+    //updating the user porfile
+    const updatingProfile = { name, email, password };
+    if (name !== userDetails.name || email !== userDetails.email) {
+      dispatch(updateProfile(updatingProfile, null));
+    }
+    //updating the user password
     const updatingPassword = {
       oldPassword: password,
       newPassword,
       passwordConfirm,
     };
-    dispatch(updateProfile(updatingProfile));
+
     if (newPassword !== passwordConfirm) {
       setMessage("The password doesnot match,please type same password.");
     }
     if (newPassword && newPassword === passwordConfirm) {
       //dispatch the action for updating password
-      dispatch(updateProfile(updatingPassword));
+      dispatch(updateProfile(null, updatingPassword));
     }
   };
   return (
@@ -69,12 +86,15 @@ function ProfileScreen() {
           <Col>
             <Form>
               <h2>User Profile</h2>
-              {/* {success && (
-              <Message variant="primary">
-                <h2>Updated</h2>
-              </Message>
-            )} */}
+              {profileUpdateSuccess && (
+                <Message variant="primary">
+                  <h3>Profile Updated.</h3>
+                </Message>
+              )}
               {message && <Message variant="danger">{message}</Message>}
+              {profileUpdateError && (
+                <Message variant="danger">{profileUpdateError}</Message>
+              )}
               <div>
                 <label htmlFor="name">UserName</label>
                 <input
@@ -99,6 +119,8 @@ function ProfileScreen() {
               <div>
                 <label htmlFor="password">Password</label>
                 <input
+                  autoFocus
+                  required
                   type="password"
                   id="password"
                   name="password"
@@ -126,7 +148,12 @@ function ProfileScreen() {
                   onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
               </div>
-              <Button type="submit" variant="primary" onClick={updateHandler}>
+              <Button
+                className="btn btn-success btn-lg"
+                type="submit"
+                variant="primary"
+                onClick={updateHandler}
+              >
                 Update
               </Button>
             </Form>
@@ -142,7 +169,8 @@ function ProfileScreen() {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>DATE</th>
+                    <th> Order DATE</th>
+
                     <th>TOTAL</th>
                     <th>PAID</th>
                     <th>DELIVERED</th>
@@ -154,12 +182,15 @@ function ProfileScreen() {
                     <tr key={order._id}>
                       <td>{order._id}</td>
                       <td>
-                        {order.paymentResult.update_time.substring(0, 10)}
+                        {order.paymentResult
+                          ? order.paymentResult.update_time.substring(0, 10)
+                          : order.updatedAt.substring(0, 10)}
+                        {}
                       </td>
                       <td>{order.totalPrice}</td>
                       <td>
                         {order.isPaid ? (
-                          order.paymentResult.update_time.substring(0, 10)
+                          order?.paymentResult.update_time.substring(0, 10)
                         ) : (
                           <i
                             className="fas fa-times"
@@ -179,7 +210,7 @@ function ProfileScreen() {
                       </td>
                       <td>
                         <Link to={`/order/${order._id}`}>
-                          <Button className="btn-sm" variant="light">
+                          <Button className="btn-sm btn btn-success p-1 fs-3 ">
                             Details
                           </Button>
                         </Link>

@@ -16,11 +16,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 html {
-  font-size: 66.5%;
+  font-size: 10px;
 }
-input {
+
+.shippingForm {
+  margin: 0 auto;
+  max-width: 50rem;
+}
+/* for forms and input types */
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
 }

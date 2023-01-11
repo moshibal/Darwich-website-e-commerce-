@@ -1,19 +1,32 @@
-import axios from "axios";
-import { PayPalButton } from "react-paypal-button-v2";
-import React, { useState, useEffect } from "react";
-import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import React, { useEffect } from "react";
+import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Loader from "../components/Utility/Loader";
-
 import Message from "../components/Utility/Message";
+import PaypayButtonWraper from "../components/Utility/PaypayButtonWraper";
 
 import { fetchOrder } from "../store/orderDetails-slice.js";
-import { orderPayReset, payOrder } from "../store/order-pay-slice.js";
+
+import {
+  deliverOrder,
+  orderDeliverReset,
+  orderPayReset,
+  payOrder,
+} from "../store/order-pay-slice.js";
+
+//fetching the client id
+
 const OrderScreen = () => {
+  const navigate = useNavigate();
   const { orderId } = useParams();
   const dispatch = useDispatch();
-  const [sdkReady, setSdkReady] = useState(false);
+
+  //user Info
+  const {
+    userInfo: { data },
+  } = useSelector((state) => state.user);
   //checking the order
   const {
     loading,
@@ -25,42 +38,30 @@ const OrderScreen = () => {
   const { loading: loadingPay, success: successPay } = useSelector(
     (state) => state.orderPay
   );
-  console.log("order", order);
-  console.log("successpay", successPay);
 
-  //states
+  //state for successful deliver
+  const { loading: loadingDeliver, success: successDeliver } = useSelector(
+    (state) => state.orderDeliver
+  );
 
   useEffect(() => {
-    const addPayPalScript = async () => {
-      //fetching the client id
-      const {
-        data: { clientID },
-      } = await axios.get("http://localhost:4000/api/config/paypal");
-      //creating the script to add the javascript sdk
-      const script = document.createElement("script");
-      script.type = "text/javascript";
-      script.async = true;
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`;
-      script.onload = () => {
-        setSdkReady(true);
-      };
-      //adding the script to the app.
-      document.body.appendChild(script);
-    };
-    //condition to fecth the order first
-    if (!order || successPay) {
-      dispatch(fetchOrder(orderId));
-      dispatch(orderPayReset());
-    } else if (!order.ispaid) {
-      if (!window.paypal) {
-        addPayPalScript();
-      } else {
-        setSdkReady(true);
-      }
+    if (!data) {
+      navigate("/login");
     }
-  }, [orderId, order, dispatch, successPay]);
+    //condition to fecth the order first
+    if (!order || successPay || successDeliver) {
+      dispatch(orderDeliverReset());
+      dispatch(orderPayReset());
+      dispatch(fetchOrder(orderId));
+    }
+  }, [orderId, order, dispatch, navigate, successPay, successDeliver, data]);
+
   const successPaymentHandler = (paypalResult) => {
+    console.log(paypalResult);
     dispatch(payOrder(orderId, paypalResult));
+  };
+  const deliverHandler = () => {
+    dispatch(deliverOrder(orderId));
   };
   return loading ? (
     <Loader />
@@ -134,8 +135,11 @@ const OrderScreen = () => {
                   ))}
                 </ListGroup>
               )}
-              <Link to={"/products"} className="btn btn-block btn-dark">
-                ADD MORE ITEMS
+              <Link
+                to={"/products"}
+                className="btn btn-success p-3 btn-lg fs-4"
+              >
+                Shop Again..
               </Link>
             </ListGroup.Item>
           </ListGroup>
@@ -168,14 +172,32 @@ const OrderScreen = () => {
               {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
-                  {!sdkReady ? (
-                    <Loader />
-                  ) : (
-                    <PayPalButton
-                      amount={order.totalPrice}
-                      onSuccess={successPaymentHandler}
-                    />
-                  )}
+
+                  {
+                    <PayPalScriptProvider
+                      options={{
+                        "client-id": `${process.env.REACT_APP_PAYPAL_CLIENT_ID}`,
+                        currency: "AUD",
+                      }}
+                    >
+                      <PaypayButtonWraper
+                        value={order.totalPrice}
+                        successPaymentHandler={successPaymentHandler}
+                      />
+                    </PayPalScriptProvider>
+                  }
+                </ListGroup.Item>
+              )}
+              {loadingDeliver && <Loader />}
+              {data && data.isAdmin && order.isPaid && !order.isDelivered && (
+                <ListGroup.Item>
+                  <Button
+                    type="button"
+                    className="btn btn-block"
+                    onClick={deliverHandler}
+                  >
+                    Mark As Delivered
+                  </Button>
                 </ListGroup.Item>
               )}
             </ListGroup>

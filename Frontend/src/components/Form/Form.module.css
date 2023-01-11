@@ -1,41 +1,58 @@
-.main {
-  display: flex;
-  background-color: aqua;
-  min-height: 90vh;
-  justify-content: center;
-  align-items: center;
-
-  background-image: linear-gradient(to right bottom, #dad992, #e6df9a);
-  clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
-}
 .form {
   background-color: beige;
-  min-height: 70vh;
+  min-height: 90vh;
   min-width: 70vw;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-
   align-items: center;
-  clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
+  clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+  flex-wrap: wrap;
 }
 label {
+  font-size: 2rem !important;
   display: block;
   margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 600;
 }
 input {
+  font: inherit;
+  font-size: 2rem;
   display: block;
   margin-bottom: 0.5rem;
-  min-width: 50vw;
+  max-width: 40vw;
+  padding: 0.7rem;
+  border-radius: 0.5rem;
 }
 .formButton {
-  min-width: 25vw;
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+  min-width: 20vw;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+button:hover {
+  background-color: aqua;
+  transition: 1s;
+}
+
+input:valid {
+  border: 2px solid green;
+}
+p {
+  font-size: 1.5rem;
 }
 span {
   font-size: larger;
   display: inline-block;
-
-  border-bottom: solid black;
+}
+.span:hover {
+  border: 1px solid black;
+  background-color: aqua;
+  transition: 0.5s;
+  border-radius: 5px;
+  padding: 2px;
+}
+input + p {
+  color: orangered;
 }

@@ -1,6 +1,6 @@
 .mainDiv {
   position: relative;
-  background-color: red;
+
   min-height: 70vh;
 }
 .bgVedio {
@@ -42,5 +42,14 @@ div a {
   min-height: 7rem;
   align-self: flex-end;
   width: 100%;
-  background-color: beige;
+  font-weight: 700;
+  font-size: larger;
+}
+.buttonMargin {
+  margin-bottom: 10rem;
+}
+.textDiv,
+.textDiv > h3 {
+  color: blue;
+  font-size: 2rem;
 }

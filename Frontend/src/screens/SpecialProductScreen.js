@@ -1,10 +1,10 @@
 import React from "react";
-import ProductSpecials from "../components/Product/ProductSpecials";
+import ProductSpecial from "../components/Product/ProductSpecial";
 
 const SpecialProductScreen = () => {
   return (
     <div>
-      <ProductSpecials />
+      <ProductSpecial />
     </div>
   );
 };

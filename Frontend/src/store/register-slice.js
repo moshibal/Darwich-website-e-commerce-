@@ -40,7 +40,7 @@ export const register = (registerObject) => {
         registerObject,
         config
       );
-      console.log(data);
+
       dispatch(registerSuccess({ userData: data }));
       dispatch(loginSuccess({ userData: data }));
       localStorage.setItem(

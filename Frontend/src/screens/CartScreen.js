@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cartRequest, deleteItem } from "../store/cart-slice";
 import { Row, Col, ListGroup, Image, Button, Card } from "react-bootstrap";
 import Message from "../components/Utility/Message";
-import styles from "../components/Cart.Module.css";
+import styles from "../components/Product/Product.module.css";
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -34,12 +34,20 @@ const CartScreen = () => {
   };
   const checkoutHandler = (e) => {
     e.preventDefault();
-    !userInfo ? navigate("/login") : navigate("/shipping");
+    !userInfo?.data ? navigate("/login") : navigate("/shipping");
+  };
+  //fix the problem of coditional calculation
+  const priceReduceFn = (accumulator, currentValue) => {
+    if (currentValue.specialPrice) {
+      return accumulator + currentValue.specialPrice * currentValue.qty;
+    } else {
+      return accumulator + currentValue.price * currentValue.qty;
+    }
   };
   return (
     <Wraper>
       <Row>
-        <Col md={8}>
+        <Col md={9}>
           <h1>Shopping Cart</h1>
           {cartItems.length === 0 ? (
             <Message>
@@ -64,15 +72,22 @@ const CartScreen = () => {
                       />
                     </Col>
                     <Col md={2}>
-                      <Link to={`/product/${item.id}`}>{item.name}</Link>
+                      <Link to={`/products/${item.id}`}>{item.name}</Link>
                     </Col>
-                    <Col md={2}>${item.price}</Col>
+                    <Col md={2}>
+                      {item.specialPrice ? (
+                        <p>${item.specialPrice}</p>
+                      ) : (
+                        <p>${item.price}</p>
+                      )}
+                    </Col>
                     <Col md={6}>
-                      <div className={styles.inputDiv}>
+                      <div>
                         <label htmlFor={item.name}>
                           Quantity in kilograms:
                         </label>
                         <input
+                          className={styles.productInputField}
                           id={item.name}
                           type="string"
                           value={item.qty}
@@ -85,7 +100,7 @@ const CartScreen = () => {
                         Shop more..
                       </Link>{" "}
                       <Button
-                        variant="primary"
+                        className="btn btn-success ms-5 p-3"
                         onClick={() => removeCartChange(item.id)}
                       >
                         Remove Item
@@ -98,23 +113,25 @@ const CartScreen = () => {
           )}
         </Col>
         {cartItems.length > 0 && (
-          <Col md={4}>
+          <Col md={3}>
             <Card>
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h2>
                     Subtotal (
-                    {cartItems.reduce((acc, item) => acc + item.qty, 0)}) items
+                    {cartItems.reduce((acc, item) => acc + item.qty, 0)})
+                    kilograms
                   </h2>{" "}
                   $
                   {cartItems
-                    .reduce((acc, item) => acc + item.qty * item.price, 0)
+                    .reduce(priceReduceFn, 0)
+
                     .toFixed(2)}
                 </ListGroup.Item>
-                <ListGroup.Item>
+                <ListGroup.Item className="d-grid ">
                   <Button
                     type="button"
-                    className="btn-block"
+                    className=" btn-success fs-3 p-3 btn "
                     disabled={cartItems.length === 0}
                     onClick={checkoutHandler}
                   >
