@@ -4,6 +4,7 @@ import {
   signup,
   forgotPassword,
   resetPassword,
+  logout,
 } from "../controllers/authentication.js";
 import {
   getAllUser,
@@ -19,6 +20,7 @@ const router = express.Router();
 //normal signup and login
 router.post("/signup", signup);
 router.post("/login", login);
+router.get("/logout", logout);
 router.get("/me", auth, getMe);
 //forgot and reset password
 router.post("/forgotPassword", forgotPassword);

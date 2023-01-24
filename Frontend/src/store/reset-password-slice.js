@@ -34,9 +34,10 @@ export const submitResetpassword = (passwordChangeObject, token) => {
       dispatch(resetPasswordLoading());
       //send the email to backend
       const { data } = await axios.patch(
-        `http://localhost:4000/users/resetPassword/${token}`,
+        `/api/users/resetPassword/${token}`,
         passwordChangeObject
       );
+
       if (data.status === "success") {
         dispatch(resetPasswordSuccess());
       }

@@ -8,7 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.user);
+
+  const {
+    message: registerErrorMessage,
+    success,
+    userInfo,
+  } = useSelector((state) => state.register);
+  //component states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,9 +23,12 @@ function SignUp() {
   const registerObject = { name, email, password, passwordConfirm };
   useEffect(() => {
     if (userInfo && userInfo?.data) {
-      navigate("/products");
+      setTimeout(() => {
+        navigate("/products");
+      }, 2000);
     }
   }, [userInfo, navigate]);
+  //register handler
   const registerHandler = (e) => {
     e.preventDefault();
     if (name.trim() === "") {
@@ -37,11 +46,19 @@ function SignUp() {
     }
   };
   return (
-    <div className={styles.main}>
-      <form className={styles.form}>
+    <form className={styles.form}>
+      <div>
         {message && <Message variant="danger">{message}</Message>}
+        {registerErrorMessage && (
+          <Message variant="danger">{registerErrorMessage}</Message>
+        )}
+        {success && (
+          <Message variant="success">
+            <p>signup successfully🤗🤗</p>
+          </Message>
+        )}
         <div>
-          <label htmlFor="name">UserName</label>
+          <label htmlFor="name">Full Name</label>
           <input
             autoFocus
             required
@@ -76,6 +93,9 @@ function SignUp() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <p className="text-black-50">
+            the password must be 10 characters long.
+          </p>
         </div>
         <div>
           <label htmlFor="passwordCon">Confirm Password</label>
@@ -98,8 +118,8 @@ function SignUp() {
             <a href="/login">Log In</a>
           </span>
         </p>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }
 

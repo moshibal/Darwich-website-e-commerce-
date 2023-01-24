@@ -39,7 +39,7 @@ export const payOrder = (orderId, paymentResult) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:4000/orders/${orderId}/pay`,
+        `/api/orders/${orderId}/pay`,
         paymentResult,
         config
       );
@@ -100,7 +100,7 @@ export const deliverOrder = (orderId) => {
       };
 
       const { data } = await axios.put(
-        `http://localhost:4000/orders/${orderId}/deliver`,
+        `/api/orders/${orderId}/deliver`,
 
         config
       );

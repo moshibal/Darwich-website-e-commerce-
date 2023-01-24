@@ -1,24 +1,14 @@
-.main {
+.form {
+  background-color: beige;
   min-height: 90vh;
   min-width: 70vw;
-  clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
-  background-color: beige;
   display: flex;
   justify-content: center;
   align-items: center;
+  clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+  flex-wrap: wrap;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-input {
-  display: block;
-  margin-bottom: 0.5rem;
-  min-width: 50vw;
-}
 .formButton {
   font-size: 1.5rem;
   min-width: 25vw;
@@ -33,9 +23,6 @@ button:hover {
   transition: 1s;
 }
 
-input:valid {
-  border: 2px solid black;
-}
 p {
   font-size: 1.5rem;
 }

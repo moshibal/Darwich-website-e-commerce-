@@ -33,7 +33,7 @@ export const fetchUsersList = () => {
       };
 
       const { data } = await axios.get(
-        "http://localhost:4000/users",
+        "/api/users",
 
         config
       );
@@ -84,7 +84,7 @@ export const deleteUser = (id) => {
       };
 
       const { data } = await axios.delete(
-        `http://localhost:4000/users/${id}`,
+        `/api/users/${id}`,
 
         config
       );
@@ -144,7 +144,7 @@ export const updateUser = (user) => {
       };
 
       const { data } = await axios.patch(
-        `http://localhost:4000/users/${user._id}`,
+        `/api/users/${user._id}`,
         user,
         config
       );
@@ -202,7 +202,7 @@ export const getUserById = (id) => {
       };
 
       const { data } = await axios.get(
-        `http://localhost:4000/users/${id}`,
+        `/api/users/${id}`,
 
         config
       );

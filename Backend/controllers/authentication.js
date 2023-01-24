@@ -4,6 +4,15 @@ import { validateUser } from "../models/user.js";
 import AppError from "../utilities/appError.js";
 import Email from "../utilities/email.js";
 import crypto from "crypto";
+const createCookie = (token, res) => {
+  const cookieOptions = {
+    expires: new Date(Date.now() + 900000),
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+  res.cookie("jwt", token, cookieOptions);
+};
+
 export const signup = asyncHandler(async (req, res, next) => {
   const { error, value } = validateUser({
     name: req.body.name,
@@ -12,7 +21,7 @@ export const signup = asyncHandler(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
   if (error) {
-    next(error);
+    return next(new AppError(error.message, 400));
   }
 
   const newUser = await User.create(value);
@@ -22,10 +31,11 @@ export const signup = asyncHandler(async (req, res, next) => {
   await email.sendWelcome();
 
   const token = newUser.createToken();
+  //cookie creation
+  createCookie(token, res);
 
   res.status(201).json({
     status: "success",
-
     data: {
       token,
       name: newUser.name,
@@ -51,14 +61,24 @@ export const login = asyncHandler(async (req, res, next) => {
   //create a token and send
 
   const token = user.createToken();
+  //cookie creation
+  createCookie(token, res);
   res.status(200).json({
     status: "success",
     data: { token, name: user.name, email: user.email, isAdmin: user.isAdmin },
   });
 });
+//logout
+export const logout = (req, res, next) => {
+  try {
+    res.cookie("jwt", "logged out", { expires: new Date(Date.now() + 10000) });
+    res.status(200).json({ message: "logged out." });
+  } catch (error) {
+    next(error);
+  }
+};
 //forgotPassword
 export const forgotPassword = async (req, res, next) => {
-  console.log(req.get("host"));
   try {
     //get user based on email
     const user = await User.findOne({ email: req.body.email });
@@ -91,34 +111,47 @@ export const forgotPassword = async (req, res, next) => {
       );
     }
   } catch (error) {
-    return new AppError(error);
+    return next(error);
   }
 };
 //resetPassword
 export const resetPassword = async (req, res, next) => {
-  //get user based on the token
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-  //if token has not been expired and there is user,set the new password
-  if (!user) {
-    return next(new AppError("token is invalid or has expired", 400));
+  try {
+    //get user based on the token
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    //if token has not been expired and there is user,set the new password
+    if (!user) {
+      return next(new AppError("token is invalid or has expired", 400));
+    }
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    user.save();
+    //update passwordIssuedTime property for the user
+    //log the user in,send JWT
+
+    const token = user.createToken();
+    //cookie creation
+    createCookie(token, res);
+    res.status(200).json({
+      status: "success",
+      data: {
+        token,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
-  user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  user.save();
-  //update passwordIssuedTime property for the user
-  //log the user in,send JWT
-  const token = user.createToken();
-  res.status(200).json({
-    status: "success",
-    data: { token, name: user.name, email: user.email, isAdmin: user.isAdmin },
-  });
 };

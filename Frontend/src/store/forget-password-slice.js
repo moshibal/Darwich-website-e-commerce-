@@ -33,10 +33,7 @@ export const submitForgetpassword = (email) => {
     try {
       dispatch(forgetpasswordLoading());
       //send the email to backend
-      const { data } = await axios.post(
-        "http://localhost:4000/users/forgotPassword",
-        email
-      );
+      const { data } = await axios.post("/api/users/forgotPassword", email);
       if (data.status === "success") {
         dispatch(forgetpasswordSuccess());
       }

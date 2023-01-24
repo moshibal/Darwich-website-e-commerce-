@@ -42,9 +42,7 @@ export const cartRequest = (productId, qty) => {
       if (checkProductAvailable) {
         dispatch(addToCart({ ...checkProductAvailable, qty: qty }));
       }
-      const { data } = await axios.get(
-        `http://localhost:4000/products/${productId}`
-      );
+      const { data } = await axios.get(`/api/products/${productId}`);
 
       dispatch(
         addToCart({

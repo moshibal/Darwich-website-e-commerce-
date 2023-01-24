@@ -1,0 +1,13 @@
+.privacy {
+  min-height: 100vh;
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(235, 235, 81),
+    rgb(238, 238, 145)
+  );
+}
+
+ul > li {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}

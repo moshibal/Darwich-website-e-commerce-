@@ -8,6 +8,8 @@ import { Col, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchProducts } from "../../store/product-slice";
+import SearchBox from "../Utility/SearchBox";
+import styles from "./Product.module.css";
 
 const Product = () => {
   const { keyword } = useParams();
@@ -26,6 +28,12 @@ const Product = () => {
   }, [dispatch, keyword, pageNumber]);
   return (
     <>
+      <div className={styles.searchMain}>
+        <div className={styles.searchBoxDiv}>
+          <SearchBox />
+        </div>
+      </div>
+
       <h1>All the products</h1>
       {loading ? (
         <Loader />

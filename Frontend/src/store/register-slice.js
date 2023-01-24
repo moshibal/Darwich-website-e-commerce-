@@ -7,7 +7,8 @@ const registerSlice = createSlice({
   initialState: {
     userInfo: {},
     loading: false,
-    message: "",
+    success: false,
+    message: null,
   },
   reducers: {
     registerRequest(state) {
@@ -15,11 +16,13 @@ const registerSlice = createSlice({
     },
     registerSuccess(state, action) {
       state.loading = false;
+      state.success = true;
       state.userInfo = action.payload.userData;
     },
     registerFail(state, action) {
       state.loading = false;
-      state.message = action.payload.message;
+      state.success = false;
+      state.message = action.payload;
     },
   },
 });
@@ -36,7 +39,7 @@ export const register = (registerObject) => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:4000/users/signup",
+        "/api/users/signup",
         registerObject,
         config
       );
@@ -48,7 +51,11 @@ export const register = (registerObject) => {
         JSON.stringify(getState().user.userInfo)
       );
     } catch (error) {
-      dispatch(registerFail({ message: "user register failed" }));
+      if (error.response.data) {
+        dispatch(registerFail(error.response.data.message));
+      } else {
+        dispatch(registerFail(error.message));
+      }
     }
   };
 };

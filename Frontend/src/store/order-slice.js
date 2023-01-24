@@ -40,11 +40,7 @@ export const createOrder = (order) => {
           Authorization: `Bearer ${userInfo.data.token}`,
         },
       };
-      const { data } = await axios.post(
-        "http://localhost:4000/orders",
-        order,
-        config
-      );
+      const { data } = await axios.post("/api/orders", order, config);
 
       dispatch(orderCreateSuccess(data));
     } catch (error) {

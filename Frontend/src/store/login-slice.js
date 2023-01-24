@@ -37,7 +37,7 @@ export const login = (email, password) => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:4000/users/login",
+        "/api/users/login",
         {
           email,
           password,
@@ -56,12 +56,19 @@ export const login = (email, password) => {
   };
 };
 export const logout = () => {
-  return (dispatch, getState) => {
-    dispatch(deleteUser());
-    localStorage.setItem(
-      "userInformation",
-      JSON.stringify(getState().user.userInfo)
-    );
+  return async (dispatch, getState) => {
+    try {
+      const res = await axios.get("/api/users/logout");
+      if (res.status === 200) {
+        dispatch(deleteUser());
+        localStorage.setItem(
+          "userInformation",
+          JSON.stringify(getState().user.userInfo)
+        );
+      }
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
 };
 export default userSlice.reducer;

@@ -15,7 +15,7 @@ function Form() {
   const { userInfo, message } = useSelector((state) => state.user);
   useEffect(() => {
     if (userInfo && userInfo?.data) {
-      navigate("/shipping");
+      navigate("/products");
     }
   }, [navigate, userInfo]);
   const loginHandler = (e) => {

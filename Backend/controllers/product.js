@@ -1,12 +1,11 @@
 import productModel from "../models/product.js";
-import specialProductModel from "../models/specialProduct.js";
+
 import AppError from "../utilities/appError.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 //get all the product
 export const getAllProducts = async (req, res, next) => {
   try {
-    console.log("bishl");
-    const pageSize = 6;
+    const pageSize = 8;
     const pageNumber = Number(req.query.pageNumber || 1);
     const keyword = req.query.keyword
       ? { name: { $regex: req.query.keyword, $options: "i" } }
@@ -66,16 +65,24 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 });
 //updating the product
 export const updateProduct = asyncHandler(async (req, res, next) => {
-  const { name, price, imageUri, description, category, availabitity } =
-    req.body;
+  const {
+    name,
+    price,
+    specialPrice,
+    imageUri,
+    description,
+    category,
+    availability,
+  } = req.body;
   const product = await productModel.findById(req.params.id);
   if (product) {
     product.name = name;
     product.price = price;
+    product.specialPrice = specialPrice;
     product.imageUri = imageUri;
     product.category = category;
     product.description = description;
-    product.availabitity = availabitity;
+    product.availabitity = availability;
     const updatedProduct = await product.save();
     res.json(updatedProduct);
   } else {
@@ -96,8 +103,13 @@ export const getSpecialProducts = async (req, res, next) => {
   try {
     const products = await productModel.find({ specialPrice: { $gte: 1 } });
 
-    if (!products) {
-      return next(new AppError("no special products found.", 400));
+    if (products.length === 0) {
+      // return next(
+      //   new AppError("There are no special products, Thank you", 400)
+      // );
+      return res
+        .status(200)
+        .json({ message: "no products found with special." });
     } else {
       res.status(200).json([...products]);
     }

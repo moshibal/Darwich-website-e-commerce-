@@ -1,30 +1,24 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import { Link } from "react-router-dom";
 import vedio from "../../assets/Grilled steak.mp4";
+import { fetchSpecialproduct } from "../../store/specialProduct-slice";
 import styles from "./Main.module.css";
 
 const Main = () => {
-  const [specialProducts, setSpecialProduct] = useState([]);
-
+  const dispatch = useDispatch();
+  //subscription to the special product
+  const [singleProduct, setSingleProduct] = useState({});
+  const { products } = useSelector((state) => state.specialProduct);
   useEffect(() => {
-    try {
-      const fetchSpecialProduct = async () => {
-        const response = await axios.get(
-          "http://localhost:4000/products/special"
-        );
-
-        if (response.status === 200) {
-          console.log(response.data);
-          setSpecialProduct(response.data);
-        }
-      };
-      fetchSpecialProduct();
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+    products.length > 0 && setSingleProduct(products[0]);
+  }, [products]);
+  useEffect(() => {
+    dispatch(fetchSpecialproduct());
+  }, [dispatch]);
   return (
     <main className={styles.mainDiv}>
       <div className={styles.bgVedio}>
@@ -53,19 +47,19 @@ const Main = () => {
               </Link>
             </div>
           </div>
+
           {/* conditionally rendering the special products */}
-          {specialProducts.length >= 1 && (
+          {products.length >= 1 && (
             <div className={styles.special}>
               <div className="w3-panel w3-green w3-hover-yellow">
-                <h2>Yuppie, WE GOT SPECIALS TODAY.</h2>
-                {specialProducts.map((item) => (
-                  <div key={item.name}>
-                    <h3>
-                      {item.name} normally $ {item.price} per kilo. Today ${" "}
-                      {item.specialPrice} only🥳
-                    </h3>
-                  </div>
-                ))}
+                <h3>Yuppie, WE GOT SPECIALS TODAY.</h3>
+
+                <div key={singleProduct.name}>
+                  <h4>
+                    {singleProduct.name} normally $ {singleProduct.price} per
+                    kilo. Today $ {singleProduct.specialPrice} only🥳
+                  </h4>
+                </div>
 
                 <Link to="/products/special">
                   <h3>Check Out All Specials &#8594;</h3>

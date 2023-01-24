@@ -32,7 +32,7 @@ export const listMyOrders = () => {
         },
       };
       const { data } = await axios.get(
-        "http://localhost:4000/orders/myorders",
+        "/api/orders/myorders",
 
         config
       );
@@ -83,7 +83,7 @@ export const fetchAllOrders = () => {
         },
       };
       const { data } = await axios.get(
-        "http://localhost:4000/orders",
+        "/api/orders",
 
         config
       );

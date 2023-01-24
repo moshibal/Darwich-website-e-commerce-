@@ -22,6 +22,6 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 const uploadProductPhoto = upload.single("image");
 const router = express.Router();
 router.post("/:id", uploadProductPhoto, (req, res, next) => {
-  res.send(`/uploads/${req.file.filename}`);
+  res.send(`/api/uploads/${req.file.filename}`);
 });
 export default router;

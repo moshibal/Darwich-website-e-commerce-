@@ -18,19 +18,21 @@ function ProductEditScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { productId } = useParams();
-
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [image, setImage] = useState("");
-  const [availability, setAvailability] = useState(false);
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [uploading, setUploading] = useState(false);
   //subscription
   const { product } = useSelector((state) => state.productDetailsById);
   const { success: successUpdate } = useSelector(
     (state) => state.productUpdate
   );
+
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [specialPrice, setSpecialPrice] = useState(0);
+  const [image, setImage] = useState("");
+  const [availability, setAvailability] = useState(true);
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [uploading, setUploading] = useState("");
+  console.log(availability);
 
   useEffect(() => {
     if (successUpdate) {
@@ -43,7 +45,8 @@ function ProductEditScreen() {
       } else {
         setName(product.name);
         setPrice(product.price);
-        setAvailability(product.availabity);
+        setAvailability(product.availabitity);
+        setSpecialPrice(product.specialPrice);
         setCategory(product.category);
         setDescription(product.description);
         setImage(product.imageUri);
@@ -58,6 +61,7 @@ function ProductEditScreen() {
         _id: product._id,
         name,
         price,
+        specialPrice,
         category,
         imageUri: image,
         availability,
@@ -76,14 +80,13 @@ function ProductEditScreen() {
         headers: { "Content-Type": "multipart/form-data" },
       };
       const { data } = await axios.post(
-        `http://localhost:4000/upload/${productId}`,
+        `/api/upload/${productId}`,
         formData,
         config
       );
       setImage(data);
       setUploading(false);
     } catch (error) {
-      console.log(error);
       setUploading(false);
     }
   };
@@ -116,6 +119,15 @@ function ProductEditScreen() {
                 />
               </div>
               <div>
+                <label htmlFor="specialPrice"> Special Price</label>
+                <input
+                  type="number"
+                  id="specialPrice"
+                  value={specialPrice}
+                  onChange={(e) => setSpecialPrice(e.target.value)}
+                />
+              </div>
+              <div>
                 <label htmlFor="category">Category</label>
                 <input
                   type="text"
@@ -136,10 +148,15 @@ function ProductEditScreen() {
               <div>
                 <label htmlFor="availability">Availability</label>
                 <input
-                  type="check-box"
+                  checked={availability}
+                  type="checkBox"
                   id="availability"
                   value={availability}
-                  onChange={(e) => setAvailability(e.target.value)}
+                  onChange={(e) =>
+                    setAvailability((preValue) => {
+                      return !preValue;
+                    })
+                  }
                 />
               </div>
               <div>

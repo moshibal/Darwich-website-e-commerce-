@@ -30,7 +30,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please provide your password"],
-    minlength: 8,
+    minlength: 10,
+    maxlength: 16,
     select: false,
   },
   passwordConfirm: {
@@ -79,7 +80,7 @@ userSchema.methods.createResetToken = function () {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-  console.log(this.passwordResetToken);
+
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
@@ -98,8 +99,8 @@ export const validateUser = function (user) {
       })
       .required(),
 
-    password: Joi.string().min(8).required(),
-    passwordConfirm: Joi.string().min(8).required(),
+    password: Joi.string().min(10).max(16).required(),
+    passwordConfirm: Joi.string().min(10).required(),
   });
   const { error, value } = schema.validate(user);
   return { error, value };

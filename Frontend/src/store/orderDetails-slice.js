@@ -7,7 +7,7 @@ const orderDetailsSlice = createSlice({
     loading: true,
     success: false,
     orderDetails: {},
-    error: null,
+    error: "",
   },
   reducers: {
     orderRequest(state, action) {
@@ -24,9 +24,15 @@ const orderDetailsSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    orderReset(state, action) {
+      state.loading = false;
+      state.success = false;
+      state.error = "";
+      state.orderDetails = {};
+    },
   },
 });
-const { orderRequest, orderDetailSuccess, orderFail } =
+export const { orderRequest, orderDetailSuccess, orderFail, orderReset } =
   orderDetailsSlice.actions;
 //action for fetching the specific order
 export const fetchOrder = (orderId) => {
@@ -42,7 +48,7 @@ export const fetchOrder = (orderId) => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:4000/orders/${orderId}`,
+        `/api/orders/${orderId}`,
 
         config
       );

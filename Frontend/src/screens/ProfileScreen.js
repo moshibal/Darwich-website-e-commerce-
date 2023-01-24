@@ -29,7 +29,7 @@ function ProfileScreen() {
     loading: orderListLoading,
     error: orderListError,
   } = useSelector((state) => state.myOrderList);
-  console.log(orders);
+
   //input state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

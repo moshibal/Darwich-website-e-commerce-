@@ -6,7 +6,7 @@ import Wraper from "../components/Utility/Wraper";
 import { paymentAction } from "../store/payment-slice";
 
 const PaymentScreen = () => {
-  const [payment, setPayment] = useState("paypal");
+  const [payment, setPayment] = useState("pay at store");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,6 +27,15 @@ const PaymentScreen = () => {
       <form>
         <input
           defaultChecked
+          type="radio"
+          id="at store"
+          name="payment"
+          value="store"
+          onClick={(e) => setPayment(e.target.value)}
+        />
+        <label htmlFor="at store">pay at store</label>
+        <br></br>
+        <input
           type="radio"
           id="paypal"
           name="payment"

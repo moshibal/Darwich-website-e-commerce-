@@ -29,14 +29,18 @@ export const postReview = (productId, reviewObject) => {
       //userInfo for sending making sure authenticated user are only reviewing.
       const { userInfo } = getState().user;
       //configure the headers to send the data
-      console.log(userInfo.data.token);
+
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.data.token}`,
         },
       };
-      await axios.post(`/products/${productId}/review`, reviewObject, config);
+      await axios.post(
+        `/api/products/${productId}/review`,
+        reviewObject,
+        config
+      );
       dispatch(reviewSuccess());
     } catch (error) {
       dispatch(

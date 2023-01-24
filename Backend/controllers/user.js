@@ -17,7 +17,6 @@ export const getUserById = asyncHandler(async (req, res, next) => {
 });
 export const updatePassword = asyncHandler(async (req, res, next) => {
   const password = req.body.oldPassword;
-  console.log(req.body);
 
   //get user from the collections
   const user = await User.findById(req.user._id).select("+password");

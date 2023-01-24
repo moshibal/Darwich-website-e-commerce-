@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/login-slice";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import SearchBox from "../Utility/SearchBox";
+
 const Navigation = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user);
@@ -19,14 +19,16 @@ const Navigation = () => {
       variant="dark"
       className="p-4"
     >
-      <Container>
+      <Container className="container-fluid d-flex justify-content-between">
         <Navbar.Brand href="/" className="fs-2">
           Darwich Meats & CO
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
+        <Navbar.Collapse
+          id="responsive-navbar-nav"
+          className=" d-flex justify-content-end"
+        >
           <Nav>
-            <SearchBox />
             {userInfo && userInfo?.data?.name ? (
               <NavDropdown title={userInfo.data.name} id="username">
                 <NavDropdown.Item href="/profile">My Profile</NavDropdown.Item>

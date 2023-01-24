@@ -13,7 +13,7 @@ const shippingSlice = createSlice({
 });
 export const { changeShipping } = shippingSlice.actions;
 export const shippingObject = (shipObj) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch(changeShipping(shipObj));
     // set the shipping address to the local storage
     localStorage.setItem(

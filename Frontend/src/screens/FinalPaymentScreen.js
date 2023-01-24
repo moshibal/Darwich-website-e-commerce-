@@ -17,7 +17,8 @@ const FinalPaymentScreen = () => {
 
   //calculate prices
   const totalItemPrice = carts.reduce(
-    (acc, item) => acc + item.price * item.qty,
+    (acc, item) =>
+      acc + item.specialPrice ? item.specialPrice : item.price * item.qty,
     0
   );
   const shippingPrice = Number(totalItemPrice > 100 ? 0 : 10);
@@ -52,11 +53,15 @@ const FinalPaymentScreen = () => {
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h2>Shipping</h2>
-              <p>
-                <strong>Address: </strong>
-                {shippingAddress.address}, {shippingAddress.city},{" "}
-                {shippingAddress.postalCode}, {shippingAddress.country}
-              </p>
+              {shippingAddress.suburb?.length > 0 ? (
+                <p>
+                  <strong>Address: </strong>
+                  {shippingAddress.address}, {shippingAddress.city},{" "}
+                  {shippingAddress.postalCode}, {shippingAddress.country}
+                </p>
+              ) : (
+                <p>Pick up at store. See you soon.</p>
+              )}
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Payment Method</h2>
@@ -84,7 +89,12 @@ const FinalPaymentScreen = () => {
                           <Link to={`/products/${item.id}`}>{item.name}</Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} * {item.price} = ${item.qty * item.price}
+                          {item.qty} *{" "}
+                          {item.specialPrice ? item.specialPrice : item.price} =
+                          $
+                          {item.qty * item.specialPrice
+                            ? item.specialPrice
+                            : item.price}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -128,6 +138,16 @@ const FinalPaymentScreen = () => {
                 <Row>
                   <Col>Total</Col>
                   <Col>${totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col className="fs-3 text-primary">
+                    Price for pick-up at store
+                  </Col>
+                  <Col className="border-left">
+                    ${totalPrice - taxPrice - shippingPrice}
+                  </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

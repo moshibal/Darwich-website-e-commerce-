@@ -6,9 +6,7 @@ import { Row, Col } from "react-bootstrap";
 const ProductAvailable = () => {
   const [availableProducts, setAvailableProducts] = useState([]);
   const fetchAvailableProducts = async () => {
-    const response = await axios.get(
-      "http://localhost:4000/products/available"
-    );
+    const response = await axios.get("http:/api/products/available");
     if (response.status === 200) {
       setAvailableProducts(response.data);
     }

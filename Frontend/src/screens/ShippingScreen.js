@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AutoComplete from "react-google-autocomplete";
+// import AutoComplete from "react-google-autocomplete";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -14,71 +14,114 @@ const ShippingScreen = () => {
   //get shipping address
   const { shippingAddress } = useSelector((state) => state.shipping);
   //fill with the initial state
-  const [address, setAddress] = useState(shippingAddress.address || "");
-  const [city, setCity] = useState(shippingAddress.city || "");
+  const [unit, setUnit] = useState(shippingAddress.unit || "");
+  const [street, setStreet] = useState(shippingAddress.address || "");
+  const [suburb, setSuburb] = useState(shippingAddress.city || "");
+
   const [postalCode, setPostalCode] = useState(
     shippingAddress.postalCode || ""
   );
-  const [country, setCountry] = useState(shippingAddress.country || "");
+  const country = "Australia";
+  const state = "NSW";
+
   const [isformValid, setFormValid] = useState(false);
-  const shippingObjValue = { address, city, postalCode, country };
+  const shippingObjValue = { unit, street, suburb, postalCode, state, country };
   //simple check to make button disable and fill all the input
   useEffect(() => {
-    const allInputFilled =
-      address.length > 0 && city.length > 0 && country.length > 0;
+    const allInputFilled = street.length > 0 && suburb.length > 0;
 
     if (allInputFilled) {
       setFormValid(true);
     } else {
       setFormValid(false);
     }
-  }, [address, city, postalCode, country]);
+  }, [street, suburb, postalCode, state]);
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(shippingObject(shippingObjValue));
-    navigate("/payment");
+    if (e.target.value === "skip") {
+      navigate("/payment");
+    } else {
+      dispatch(shippingObject(shippingObjValue));
+      navigate("/payment");
+    }
   };
-  //goggle auto complete form
+  // //goggle auto complete form
+  // const googleAddress = (place) => {
+  //   console.log(place);
+  // };
   return (
     <Wraper>
       <div>
         <h2 className="text-center">Shipping page</h2>;
         <form className="shippingForm">
-          <AutoComplete
+          <p className="fs-2 text-warning">
+            At the moment, we are not doing home delivery, You may use{" "}
+            <strong>
+              <a href="https://www.doordash.com/en-AU/store/darwich-meats-&-co-greenacre-24510938">
+                DoorDash
+              </a>
+            </strong>{" "}
+            for home delivery. Sorry for inconvience.
+          </p>
+          <p>You may skip shipping form for pick-up at store.</p>
+          <button
+            onClick={submitHandler}
+            className="btn btn-success p-3 btn-lg fs-3"
+            value="skip"
+          >
+            Skip & Continue.
+          </button>
+          {/* <AutoComplete
             className="mb-5"
-            placeholder="search for the place"
+            placeholder="search for the places to speed up the filling proccess"
             apiKey={process.env.REACT_APP_GOOGLE_MAP_ID}
-            onPlaceSelected={(place) => console.log(place)}
-          />
-
+            onPlaceSelected={googleAddress}
+          />*/}
           <div>
-            <label htmlFor="address">Street Name</label>
+            <label htmlFor="unit">Unit</label>
             <input
               autoFocus
               required
               type="text"
-              id="address"
-              name="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              id="unit"
+              name="unit"
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
             />
           </div>
           <div>
-            <label htmlFor="city">City</label>
+            <label htmlFor="street">Street Name</label>
             <input
               required
               type="text"
-              id="city"
-              name="city"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
+              id="street"
+              name="street"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
             />
+          </div>
+          <div>
+            <label htmlFor="suburb">Suburb Name</label>
+            <input
+              required
+              type="text"
+              id="suburb"
+              name="suburb"
+              value={suburb}
+              onChange={(e) => setSuburb(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="state">State Name</label>
+            <input type="text" id="state" name="state" defaultValue="NSW" />
           </div>
           <div>
             <label htmlFor="postalCode">PostalCode</label>
             <input
               required
               type="number"
+              min="1000"
+              max="4000"
               id="postalCode"
               name="postalCode"
               value={postalCode}
@@ -88,12 +131,10 @@ const ShippingScreen = () => {
           <div>
             <label htmlFor="country">Country</label>
             <input
-              required
               type="text"
               id="country"
               name="country"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
+              defaultValue="Australia"
             />
           </div>
           <p className="fs-3 text-warning">

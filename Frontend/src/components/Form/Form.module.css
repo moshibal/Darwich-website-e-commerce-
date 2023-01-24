@@ -8,20 +8,7 @@
   clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
   flex-wrap: wrap;
 }
-label {
-  font-size: 2rem !important;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-input {
-  font: inherit;
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 0.5rem;
-  max-width: 40vw;
-  padding: 0.7rem;
-  border-radius: 0.5rem;
-}
+
 .formButton {
   margin-left: 0.5rem;
   font-size: 1.5rem;
@@ -36,9 +23,6 @@ button:hover {
   transition: 1s;
 }
 
-input:valid {
-  border: 2px solid green;
-}
 p {
   font-size: 1.5rem;
 }

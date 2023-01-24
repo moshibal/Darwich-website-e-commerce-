@@ -1,4 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
+//reducers
+import subscribeReducer from "./subscribe-slice";
 import reviewReducer from "./review-slice";
 import cartReducer from "./cart-slice";
 import loginReducer from "./login-slice";
@@ -23,10 +25,13 @@ import productReducer, {
   productDeleteSlice,
   productUpdateSlice,
 } from "./product-slice";
+import specialProductReducer from "./specialProduct-slice";
 
 const store = configureStore({
   reducer: {
+    subscibtion: subscribeReducer,
     product: productReducer,
+    specialProduct: specialProductReducer,
     productDetailsById: getProductById.reducer,
     productDelete: productDeleteSlice.reducer,
     productCreate: productCreateSlice.reducer,

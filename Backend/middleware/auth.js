@@ -10,6 +10,8 @@ export const auth = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   } else {
     return next(new AppError("No token provided,please log in first", 401));
   }

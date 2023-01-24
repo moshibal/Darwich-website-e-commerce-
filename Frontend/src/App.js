@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
+import AboutScreen from "./screens/AboutScreen";
 import ProductScreen from "./screens/ProductScreen";
 import LoginScreen from "./screens/LoginScreen";
 
@@ -19,11 +20,16 @@ import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
 import ResetPasswordScreen from "./screens/ResetPasswordScreen";
+import PrivacyScreen from "./screens/PrivacyScreen";
+import TermScreen from "./screens/TermScreen";
 
 function App() {
   return (
     <Routes>
       <Route path="/" index element={<HomeScreen />} />
+      <Route path="/about" element={<AboutScreen />} />
+      <Route path="/privacy" element={<PrivacyScreen />} />
+      <Route path="/term" element={<TermScreen />} />
       <Route path="/search/:keyword" element={<ProductScreen />} />
       <Route path="/products/page/:pageNumber" element={<ProductScreen />} />
 

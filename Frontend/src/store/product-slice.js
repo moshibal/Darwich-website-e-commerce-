@@ -17,7 +17,7 @@ const productSlice = createSlice({
     productFail(state, action) {
       state.loading = false;
       state.products = [];
-      state.message = action.payload.message;
+      state.message = action.payload;
     },
   },
 });
@@ -29,12 +29,18 @@ export const fetchProducts = (keyword = "", pageNumber = "") => {
     try {
       dispatch(productRequest());
       const { data } = await axios.get(
-        `http://localhost:4000/products?keyword=${keyword}&pageNumber=${pageNumber}`
+        `/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
       );
 
       dispatch(productSuccess(data));
     } catch (error) {
-      dispatch(productFail({ message: "failed to fetch the products" }));
+      dispatch(
+        productFail(
+          error.response?.data.message
+            ? error.response.data.message
+            : error.message
+        )
+      );
     }
   };
 };
@@ -70,9 +76,7 @@ export const fetchProductById = (productId) => {
   return async (dispatch) => {
     try {
       dispatch(productByIdRequest());
-      const { data } = await axios.get(
-        `http://localhost:4000/products/${productId}`
-      );
+      const { data } = await axios.get(`/api/products/${productId}`);
 
       dispatch(productByIdSuccess(data));
     } catch (error) {
@@ -115,7 +119,7 @@ export const deleteProduct = (productID) => {
         },
       };
       await axios.delete(
-        `http://localhost:4000/products/${productID}`,
+        `/api/products/${productID}`,
 
         config
       );
@@ -173,11 +177,7 @@ export const createProduct = () => {
           Authorization: `Bearer ${userInfo.data.token}`,
         },
       };
-      const { data } = await axios.post(
-        `http://localhost:4000/products`,
-        {},
-        config
-      );
+      const { data } = await axios.post(`/api/products`, {}, config);
 
       dispatch(productCreateSuccess(data));
     } catch (error) {
@@ -224,7 +224,6 @@ export const {
 export const updateProduct = (product) => {
   return async (dispatch, getState) => {
     try {
-      console.log(product);
       dispatch(productUpdateRequest());
       //get user info as it is protected
       const { userInfo } = getState().user;
@@ -235,7 +234,7 @@ export const updateProduct = (product) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:4000/products/${product._id}`,
+        `/api/products/${product._id}`,
         product,
         config
       );

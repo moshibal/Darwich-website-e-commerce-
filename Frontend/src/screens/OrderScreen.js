@@ -1,11 +1,11 @@
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+// import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React, { useEffect } from "react";
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Loader from "../components/Utility/Loader";
 import Message from "../components/Utility/Message";
-import PaypayButtonWraper from "../components/Utility/PaypayButtonWraper";
+// import PaypayButtonWraper from "../components/Utility/PaypayButtonWraper";
 
 import { fetchOrder } from "../store/orderDetails-slice.js";
 
@@ -13,7 +13,6 @@ import {
   deliverOrder,
   orderDeliverReset,
   orderPayReset,
-  payOrder,
 } from "../store/order-pay-slice.js";
 
 //fetching the client id
@@ -34,10 +33,10 @@ const OrderScreen = () => {
     error,
   } = useSelector((state) => state.orderDetail);
 
-  //state for successful pay
-  const { loading: loadingPay, success: successPay } = useSelector(
-    (state) => state.orderPay
-  );
+  // //state for successful pay
+  // const { loading: loadingPay, success: successPay } = useSelector(
+  //   (state) => state.orderPay
+  // );
 
   //state for successful deliver
   const { loading: loadingDeliver, success: successDeliver } = useSelector(
@@ -49,17 +48,16 @@ const OrderScreen = () => {
       navigate("/login");
     }
     //condition to fecth the order first
-    if (!order || successPay || successDeliver) {
+    if (orderId || successDeliver) {
       dispatch(orderDeliverReset());
       dispatch(orderPayReset());
       dispatch(fetchOrder(orderId));
     }
-  }, [orderId, order, dispatch, navigate, successPay, successDeliver, data]);
+  }, [orderId, dispatch, navigate, successDeliver, data]);
 
-  const successPaymentHandler = (paypalResult) => {
-    console.log(paypalResult);
-    dispatch(payOrder(orderId, paypalResult));
-  };
+  // const successPaymentHandler = (paypalResult) => {
+  //   dispatch(payOrder(orderId, paypalResult));
+  // };
   const deliverHandler = () => {
     dispatch(deliverOrder(orderId));
   };
@@ -85,12 +83,18 @@ const OrderScreen = () => {
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Shipping</h2>
-              <p>
-                <strong>Address: </strong>
-                {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
-                {order.shippingAddress.postalCode},{" "}
-                {order.shippingAddress.country}
-              </p>
+              {order.shippingAddress &&
+              order.shippingAddress?.suburb.length > 0 ? (
+                <p>
+                  <strong>Address: </strong>
+                  {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
+                  {order.shippingAddress.postalCode},{" "}
+                  {order.shippingAddress.country}
+                </p>
+              ) : (
+                <p>Pick up at store. See you soon.</p>
+              )}
+
               {!order.isDelivered ? (
                 <Message variant="danger">Not Delivered Yet.</Message>
               ) : (
@@ -139,7 +143,7 @@ const OrderScreen = () => {
                 to={"/products"}
                 className="btn btn-success p-3 btn-lg fs-4"
               >
-                Shop Again..
+                SEE ALL PRODUCTS
               </Link>
             </ListGroup.Item>
           </ListGroup>
@@ -169,7 +173,17 @@ const OrderScreen = () => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              {!order.isPaid && (
+              <ListGroup.Item>
+                <Row>
+                  <Col className="fs-3 text-primary">
+                    Price for pick-up at store
+                  </Col>
+                  <Col className="border-left">
+                    ${order.totalPrice - order.taxPrice - order.shippingPrice}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              {/* {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
 
@@ -187,7 +201,7 @@ const OrderScreen = () => {
                     </PayPalScriptProvider>
                   }
                 </ListGroup.Item>
-              )}
+              )} */}
               {loadingDeliver && <Loader />}
               {data && data.isAdmin && order.isPaid && !order.isDelivered && (
                 <ListGroup.Item>
