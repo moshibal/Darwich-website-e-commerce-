@@ -1,7 +1,7 @@
 import "dotenv/config";
 import app from "./app.js";
-const server = app.listen(process.env.PORT, () => {
-  console.log(`server running on the port ${process.env.PORT}`);
+const server = app.listen(process.env.PORT || 8000, () => {
+  console.log(`server running on the port ${process.env.PORT || 8000}`);
 });
 process.on("uncaughtException", (err) => {
   console.log("we got an uncaught exception");
