@@ -59,7 +59,7 @@ app.post("/api/subscribtion", async (req, res, next) => {
   try {
     const email = req.body.email;
     const emailExist = await subscribtionModel.findOne({ email: email });
-    console.log(emailExist);
+
     if (emailExist) {
       return next(new AppError("you are already subscribed. Thank You..", 400));
     } else {

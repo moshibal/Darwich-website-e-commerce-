@@ -55,3 +55,19 @@ input:valid {
 input:invalid {
   border: 2px solid red;
 }
+h2 {
+  font-weight: 500;
+  font-size: 3rem;
+}
+h3 {
+  font-weight: 500;
+  font-size: 2.5rem;
+}
+h4 {
+  font-weight: 400;
+  font-size: 2rem;
+}
+i + a {
+  text-decoration: none;
+  color: black;
+}

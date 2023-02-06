@@ -33,7 +33,9 @@ li {
 }
 div a {
   text-decoration: none;
+  color: black;
 }
+
 .special {
   position: absolute;
   left: 0;
@@ -47,8 +49,6 @@ div a {
 .buttonMargin {
   margin-bottom: 10rem;
 }
-.textDiv,
-.textDiv > h3 {
+.textDiv {
   color: blue;
-  font-size: 2rem;
 }

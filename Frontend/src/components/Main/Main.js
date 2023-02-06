@@ -41,7 +41,7 @@ const Main = () => {
             <h3>GRASS FED BEEF & LAMB & CHICKEN</h3>
           </div>
           <div className={styles.buttonMargin}>
-            <div className="w3-btn w3-round-xxlarge w3-hover-green w3-yellow w3-padding-large w3-text-large">
+            <div>
               <Link to="/products">
                 <h3>Check All Products &#8594;</h3>
               </Link>
@@ -51,7 +51,7 @@ const Main = () => {
           {/* conditionally rendering the special products */}
           {products.length >= 1 && (
             <div className={styles.special}>
-              <div className="w3-panel w3-green w3-hover-yellow">
+              <div>
                 <h3>Yuppie, WE GOT SPECIALS TODAY.</h3>
 
                 <div key={singleProduct.name}>
