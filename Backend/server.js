@@ -1,5 +1,6 @@
 import "dotenv/config";
 import app from "./app.js";
+console.log(process.env.PORT);
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log(`server running on the port ${process.env.PORT || 8000}`);
 });
