@@ -6,6 +6,11 @@ name: Darwich
 on:
   push:
     branches: ["main"]
+env:
+  NODE_ENV: ${{secrets.NODE_ENV}}
+  PORT: ${{secrets.PORT}}
+  USERNAME: ${{secrets.USERNAME}}
+  PASSWORD: ${{secrets.PASSWORD}}
 
 jobs:
   build:
@@ -13,11 +18,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v3
+      - name: Create .env file
+        run: echo "NODE_ENV=$NODE_ENV\nPORT=$PORT\nUSERNAME=$USERNAME\nPASSWORD=$PASSWORD" > .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -25,4 +32,4 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run build --if-present
-      - run: pm2 start ecosystem.config.cjs
+      - run: pm2 restart Backend/server.js
