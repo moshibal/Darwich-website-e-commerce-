@@ -23,8 +23,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # - name: Create .env file
-      #   run: echo "NODE_ENV=$NODE_ENV\nPORT=$PORT\nUSERNAME=$USERNAME\nPASSWORD=$PASSWORD" > .env
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -34,4 +33,4 @@ jobs:
 
       - run: npm run build --if-present
       #trying to add auto restart with pm2 restart
-      - run: pm2 restart Backend/server.js
+      - run: NODE_ENV=$NODE_ENV PORT=$PORT USERNAME=$USERNAME PASSWORD=$PASSWORD pm2 restart Backend/server.js
