@@ -24,10 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: save .env
-        run: echo "export PORT=$PORT" > .env
-        run: echo "export USERNAME=$USERNAME" > .env
-        run: echo "export PASSWORD=$PASSWORD" > .env
-        run: echo "export NODE_ENV=$NODE_ENV" > .env
+        run: |
+        echo "export PORT=$PORT" > .env;
+        echo "export USERNAME=$USERNAME" > .env;
+        echo "export PASSWORD=$PASSWORD" > .env;
+        echo "export NODE_ENV=$NODE_ENV" > .env;
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
