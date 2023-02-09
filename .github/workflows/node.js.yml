@@ -23,8 +23,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Create .env file
-        run: echo "NODE_ENV=$NODE_ENV\nPORT=$PORT\nUSERNAME=$USERNAME\nPASSWORD=$PASSWORD" > .env
+      # - name: Create .env file
+      #   run: echo "NODE_ENV=$NODE_ENV\nPORT=$PORT\nUSERNAME=$USERNAME\nPASSWORD=$PASSWORD" > .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
