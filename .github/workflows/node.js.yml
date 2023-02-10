@@ -23,11 +23,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set environment variables on the self-hosted runner
         run: echo "export PORT=$PORT" >> .env
-      - name: Set environment variables for dUsername on the self-hosted runner
         run: echo "export USERNAME=$USERNAME" >> .env
-      - name: Set environment variables for dPassword on the self-hosted runner
         run: echo "export PASSWORD=$PASSWORD" >> .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -35,8 +32,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
-      - name: build is available
+
       - run: npm run build --if-present
       #trying to add auto restart with pm2 restart
-      - name: run the server with source
+
       - run: pm2 restart Backend/server.js
