@@ -24,12 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set environment variables on the self-hosted runner
-        run: |
-          echo "export PORT=$PORT" >> ~/.bashrc
-          echo "export USERNAME=$USERNAME" >> ~/.bashrc
-          echo "export PASSWORD=$PASSWORD" >> ~/.bashrc
-          echo "export NODE_ENV=$NODE_ENV" >> ~/.bashrc
-
+        run: echo "export PORT=$PORT" >> .env
+      - name: Set environment variables for dUsername on the self-hosted runner
+        run: echo "export USERNAME=$USERNAME" >> .env
+      - name: Set environment variables for dPassword on the self-hosted runner
+        run: echo "export PASSWORD=$PASSWORD" >> .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
