@@ -7,6 +7,9 @@ on:
   push:
     branches: ["main"]
 env:
+  SENDGRID_USERNAME: ${{secrets.SENDGRID_USERNAME}}
+  SENDGRID_PASSWORD: ${{secrets.SENDGRID_PASSWORD}}
+  EMIAL_FROM: ${{secrets.EMIAL_FROM}}
   JWT_SECRET: ${{secrets.JWT_SECRET}}
   NODE_ENV: ${{secrets.NODE_ENV}}
   PORT: ${{secrets.PORT}}
@@ -31,6 +34,10 @@ jobs:
           echo "export USERNAME=$USERNAME" >> .env
           echo "export PASSWORD=$PASSWORD" >> .env
           echo "export JWT_SECRET=$JWT_SECRET" >> .env
+          echo "export SENDGRID_USERNAME=$SENDGRID_USERNAME" >> .env
+          echo "export SENDGRID_PASSWORD=$SENDGRID_PASSWORD" >> .env
+          echo "export EMIAL_FROM=$EMIAL_FROM" >> .env
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
