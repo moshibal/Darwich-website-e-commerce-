@@ -48,4 +48,4 @@ jobs:
       - run: npm run build --if-present
       #trying to add auto restart with pm2 restart
 
-      - run: pm2 restart Backend/server.js
+      - run: pm2 restart Backend/server.js --update-env
