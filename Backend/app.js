@@ -30,6 +30,16 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 //global middleware
+// Add CORS headers middleware
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "http://darwich-frontend.s3-website-ap-southeast-2.amazonaws.com"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 app.use(cors());
 
 app.use(helmet());
