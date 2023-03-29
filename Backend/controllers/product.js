@@ -1,5 +1,4 @@
 import productModel from "../models/product.js";
-
 import AppError from "../utilities/appError.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 //get all the product
