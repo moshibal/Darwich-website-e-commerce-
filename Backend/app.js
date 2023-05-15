@@ -18,6 +18,7 @@ import productRouter from "./routes/product.js";
 import userRouter from "./routes/user.js";
 import orderRouter from "./routes/order.js";
 import uploadRouter from "./routes/uploadRoute.js";
+import bookingRouter from "./routes/booking.js";
 import { subscribtionModel } from "./models/subscribtion.js";
 
 const app = express();
@@ -31,15 +32,15 @@ if (process.env.NODE_ENV === "development") {
 }
 //global middleware
 // Add CORS headers middleware
-app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "http://darwich-frontend.s3-website-ap-southeast-2.amazonaws.com"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "http://darwich-frontend.s3-website-ap-southeast-2.amazonaws.com"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   next();
+// });
 app.use(cors());
 
 app.use(helmet());
@@ -89,6 +90,7 @@ app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/bookings", bookingRouter);
 
 app.all("*", (req, res, next) => {
   next(
