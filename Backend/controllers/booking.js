@@ -10,18 +10,17 @@ export const getAllBookings = async (req, res, next) => {
 };
 export const postBooking = async (req, res, next) => {
   try {
-    const { name, email, date, phone, message } = req.body;
-    const bookingObject = { name, email, phone, message, date: new Date(date) };
+    const { name, email, phone, date, message } = req.body;
+
+    const bookingObject = { name, email, phone, message, date };
+
     //simple check email and name check
     const booking = await bookingModel.findOne({ email: req.body.email });
     if (booking) {
       const currentDate = new Date();
       const givenDate = new Date(date);
 
-      if (givenDate < currentDate) {
-        await bookingModel.updateOne({ date: new Date(req.body.date) });
-        res.status(201).json({ message: "New Booking made successfully." });
-      } else {
+      if (givenDate > currentDate) {
         return next(
           new AppError(
             "You have already made booking, please contact grooveandvibes for changing the date.",
