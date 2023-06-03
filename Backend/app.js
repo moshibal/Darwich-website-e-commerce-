@@ -19,6 +19,7 @@ import userRouter from "./routes/user.js";
 import orderRouter from "./routes/order.js";
 import uploadRouter from "./routes/uploadRoute.js";
 import bookingRouter from "./routes/booking.js";
+import vibeRegistrationRouter from "./routes/registrationVibe.js";
 import { subscribtionModel } from "./models/subscribtion.js";
 
 const app = express();
@@ -30,17 +31,7 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-//global middleware
-// Add CORS headers middleware
-// app.use((req, res, next) => {
-//   res.setHeader(
-//     "Access-Control-Allow-Origin",
-//     "http://darwich-frontend.s3-website-ap-southeast-2.amazonaws.com"
-//   );
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
+
 app.use(cors());
 
 app.use(helmet());
@@ -61,6 +52,11 @@ app.use(xss());
 app.use(hpp());
 //server static files
 app.use("/api/uploads", express.static(__dirname + "/uploads"));
+// app.use(express.static(path.join(__dirname, "build")));
+//  Serve the main HTML file for all routes
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 // ALL Routers
 app.get("/api/config/paypal", (req, res) => {
@@ -91,7 +87,11 @@ app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/bookings", bookingRouter);
-
+app.use("/api/vibeRigistration", vibeRegistrationRouter);
+// Serve the main HTML file for all routes
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 app.all("*", (req, res, next) => {
   next(
     new AppError(
