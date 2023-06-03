@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 router.post("/", auth, postRegistration);
 router.get("/", auth, getAllStudents);
-router.post("/attendance", auth, updateAttendence);
+router.patch("/attendance", auth, updateAttendence);
 router.delete("/:id", auth, removeStudents);
 
 export default router;
