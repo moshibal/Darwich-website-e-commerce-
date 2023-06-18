@@ -93,7 +93,6 @@ export const getAllStudents = async (req, res, next) => {
 };
 export const updateAttendence = async (req, res, next) => {
   try {
-    console.log(req.body);
     const student = await registerVibeModel.findById({ _id: req.body._id });
     console.log(student);
     if (student) {
@@ -102,6 +101,7 @@ export const updateAttendence = async (req, res, next) => {
       } else {
         student.attendance += 1;
       }
+      student.classes = student.classes;
       await student.save();
 
       res.json({ message: "Successfuly updated the attendance" });

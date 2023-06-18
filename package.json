@@ -4,11 +4,12 @@
   "description": "backend for darwich",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon Backend/server.js",
+    "start": "node Backend/server.js",
     "server": "node Backend/server.js",
     "client": "npm start --prefix Frontend",
     "debug": "ndb Backend/server.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm install"
   },
   "type": "module",
   "author": "bishal",

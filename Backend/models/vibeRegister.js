@@ -26,7 +26,6 @@ const registerSchema = new mongoose.Schema({
   },
   selectedClass: {
     type: String,
-    required: [true, "Please select the class."],
   },
   attendance: {
     type: Number,
