@@ -1,6 +1,6 @@
 import express from "express";
 
-import { auth } from "../middleware/auth.js";
+import { auth, restrict } from "../middleware/auth.js";
 import {
   getAllStudents,
   postRegistration,
@@ -8,9 +8,9 @@ import {
   updateAttendence,
 } from "../controllers/booking.js";
 const router = express.Router();
-router.post("/", auth, postRegistration);
-router.get("/", auth, getAllStudents);
-router.patch("/attendance", auth, updateAttendence);
-router.delete("/:id", auth, removeStudents);
+router.post("/", auth, restrict, postRegistration);
+router.get("/", auth, restrict, getAllStudents);
+router.patch("/attendance", auth, restrict, updateAttendence);
+router.delete("/:id", auth, restrict, removeStudents);
 
 export default router;

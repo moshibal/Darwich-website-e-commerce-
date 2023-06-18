@@ -1,18 +1,23 @@
+import twilio from "twilio";
 import bookingModel from "../models/booking.js";
 import registerVibeModel from "../models/vibeRegister.js";
 import AppError from "../utilities/appError.js";
+
+//configuration for sms
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_TOKEN;
+const client = twilio(accountSid, authToken);
+
+//get all bookings
 export const getAllBookings = async (req, res, next) => {
   try {
-    const vibeAdmin = req.user.email === "grooveandvibes@gmail.com";
-    if (!vibeAdmin) {
-      return next(new AppError("Permission denied.", 403));
-    }
-    const bookings = await bookingModel.find();
+    const bookings = await bookingModel.find().sort({ createdAt: -1 });
     res.status(200).json({ bookings });
   } catch (error) {
     next(new AppError(error.message, 404));
   }
 };
+//post bookings
 export const postBooking = async (req, res, next) => {
   try {
     const { name, email, phone, date, message } = req.body;
@@ -35,19 +40,36 @@ export const postBooking = async (req, res, next) => {
       }
     } else {
       await bookingModel.create(bookingObject);
+      await client.messages.create({
+        to: process.env.MY_NUMBER,
+        from: process.env.TWILIO_PHONE,
+        body: `Booking has been made form ${name} for ${date}.Please check your admin page. Thank You😘`,
+      });
+
       res.status(201).json({ message: "Booking made successfully." });
     }
   } catch (error) {
     next(new AppError(error.message, 404));
   }
 };
+//delete booking
+export const deleteBooking = async (req, res, next) => {
+  try {
+    const bookingId = req.params.id;
+    const booking = await bookingModel.findById({ _id: bookingId });
+    if (!booking) {
+      return next(new AppError("No Booking with this id.", 404));
+    }
+    await booking.remove();
+    const bookings = await bookingModel.find();
+    res.json({ message: "Booking Removed", bookings });
+  } catch (error) {
+    next(new AppError(error.message, 400));
+  }
+};
 //for registration
 export const postRegistration = async (req, res, next) => {
   try {
-    const vibeAdmin = req.user.email === "grooveandvibes@gmail.com";
-    if (!vibeAdmin) {
-      return next(new AppError("Permission denied.", 403));
-    }
     const { name, email, phone, address, selectedClass } = req.body;
     const registerObject = { name, email, phone, address, selectedClass };
     const response = await registerVibeModel.create(registerObject);
@@ -60,10 +82,6 @@ export const postRegistration = async (req, res, next) => {
 };
 export const getAllStudents = async (req, res, next) => {
   try {
-    const vibeAdmin = req.user.email === "grooveandvibes@gmail.com";
-    if (!vibeAdmin) {
-      return next(new AppError("Permission denied.", 403));
-    }
     const students = await registerVibeModel.find();
     if (!students) {
       return next(new AppError("no students found.", 404));
@@ -75,11 +93,9 @@ export const getAllStudents = async (req, res, next) => {
 };
 export const updateAttendence = async (req, res, next) => {
   try {
-    const vibeAdmin = req.user.email === "grooveandvibes@gmail.com";
-    if (!vibeAdmin) {
-      return next(new AppError("Permission denied.", 403));
-    }
-    const student = await registerVibeModel.findById(req.body._id);
+    console.log(req.body);
+    const student = await registerVibeModel.findById({ _id: req.body._id });
+    console.log(student);
     if (student) {
       if (req.body.reset === 0) {
         student.attendance = 0;
@@ -87,19 +103,17 @@ export const updateAttendence = async (req, res, next) => {
         student.attendance += 1;
       }
       await student.save();
+
       res.json({ message: "Successfuly updated the attendance" });
     }
   } catch (error) {
+    console.log(error.message);
     next(new AppError(error.message, 400));
   }
 };
 //remove students
 export const removeStudents = async (req, res, next) => {
   try {
-    const vibeAdmin = req.user.email === "grooveandvibes@gmail.com";
-    if (!vibeAdmin) {
-      return next(new AppError("Permission denied.", 403));
-    }
     const student = await registerVibeModel.findById(req.params.id);
     if (student) {
       await student.remove();
