@@ -90,10 +90,20 @@ export const postRegistration = async (req, res, next) => {
 };
 export const getAllStudents = async (req, res, next) => {
   try {
-    const students = await registerVibeModel.find();
-    if (!students) {
-      return next(new AppError("no students found.", 404));
+    const selectedGroup = req.query.selectedGroup;
+    let students;
+
+    if (selectedGroup) {
+      students = await registerVibeModel.find({ selectedGroup: selectedGroup });
+    } else {
+      students = await registerVibeModel.find();
     }
+    if (students.length === 0) {
+      return next(
+        new AppError("No students found for the selected group.", 400)
+      );
+    }
+
     res.status(200).json({ students });
   } catch (error) {
     next(new AppError(error.message, 400));
