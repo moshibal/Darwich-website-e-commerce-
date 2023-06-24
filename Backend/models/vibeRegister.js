@@ -27,6 +27,9 @@ const registerSchema = new mongoose.Schema({
   selectedClass: {
     type: String,
   },
+  selectedGroup: {
+    type: String,
+  },
   attendance: {
     type: Number,
     default: 0,

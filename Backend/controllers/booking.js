@@ -70,8 +70,16 @@ export const deleteBooking = async (req, res, next) => {
 //for registration
 export const postRegistration = async (req, res, next) => {
   try {
-    const { name, email, phone, address, selectedClass } = req.body;
-    const registerObject = { name, email, phone, address, selectedClass };
+    const { name, email, phone, address, selectedClass, selectedGroup } =
+      req.body;
+    const registerObject = {
+      name,
+      email,
+      phone,
+      address,
+      selectedClass,
+      selectedGroup,
+    };
     const response = await registerVibeModel.create(registerObject);
     if (response) {
       res.status(201).json({ message: "new student added." });
@@ -94,7 +102,7 @@ export const getAllStudents = async (req, res, next) => {
 export const updateAttendence = async (req, res, next) => {
   try {
     const student = await registerVibeModel.findById({ _id: req.body._id });
-    console.log(student);
+
     if (student) {
       if (req.body.reset === 0) {
         student.attendance = 0;
