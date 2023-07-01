@@ -2,6 +2,7 @@ import twilio from "twilio";
 import bookingModel from "../models/booking.js";
 import registerVibeModel from "../models/vibeRegister.js";
 import AppError from "../utilities/appError.js";
+import Email from "../utilities/email.js";
 
 //configuration for sms
 const accountSid = process.env.TWILIO_SID;
@@ -39,14 +40,42 @@ export const postBooking = async (req, res, next) => {
         );
       }
     } else {
-      await bookingModel.create(bookingObject);
-      await client.messages.create({
-        to: process.env.MY_NUMBER,
-        from: process.env.TWILIO_PHONE,
-        body: `Booking has been made form ${name} for ${date}.Please check your admin page. Thank You😘`,
-      });
+      const bookingDetail = await bookingModel.create(bookingObject);
+      const bookingComformationTemplete = `<!DOCTYPE html>
+      <html>
+      <head>
+          <title>Booking Confirmation - Dance and Vibes</title>
+      </head>
+      <body>
+          <h1>Booking Confirmation</h1>
+          <p>Dear ${bookingDetail.name},</p>
+          
+          <p>Thank you for booking with Dance and Vibes. We are excited to have you join us for an amazing dance experience!</p>
+          
+          <p>Booking Details:</p>
+          <ul>
+              <li><strong>Date:</strong> ${bookingDetail.date}</li>
+              <li><strong>Location:</strong> 491 Princes Highway Rockdale,Sydney</li>
+                 
+          </ul>
+          
+          <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
+          
+          <p>Best regards,</p>
+          <p>The Dance and Vibes Team</p>
+      </body>
+      </html>`;
+      if (bookingComformationTemplete) {
+        const email = new Email(bookingDetail, "", bookingComformationTemplete);
+        await email.sendBooking();
+        await client.messages.create({
+          to: process.env.MY_NUMBER,
+          from: process.env.TWILIO_PHONE,
+          body: `Booking has been made form ${name} for ${date}.Please check your admin page. Thank You😘`,
+        });
 
-      res.status(201).json({ message: "Booking made successfully." });
+        res.status(201).json({ message: "Booking made successfully." });
+      }
     }
   } catch (error) {
     next(new AppError(error.message, 404));

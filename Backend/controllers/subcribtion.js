@@ -1,5 +1,5 @@
-import { subscribtionModel } from "../models/subscribtion";
-import AppError from "../utilities/appError";
+import { subscribtionModel } from "../models/subscribtion.js";
+import AppError from "../utilities/appError.js";
 export const subscribe = async (req, res, next) => {
   try {
     const email = req.body.email;

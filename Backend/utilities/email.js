@@ -12,9 +12,8 @@ class Email {
   constructor(user, url, message) {
     this.message = message;
     this.to = user.email;
-    this.firstName = user.name;
     this.url = url;
-    this.from = `<Darwich Meats & Co <${process.env.EMIAL_FROM}>`;
+    this.from = `<Grooveandvibes Dance Studio <${process.env.EMIAL_FROM}>`;
   }
   createTransport() {
     if (process.env.NODE_ENV === "production") {
@@ -36,23 +35,21 @@ class Email {
       },
     });
   }
-  async send(templete, subject) {
-    let combinetemplete = "";
-    if (this.message) {
-      combinetemplete = basetemplete + this.message;
-    }
+  async send(subject) {
     //define email options
     const mailOptions = {
       from: this.from,
       to: this.to,
       subject,
-      html: combinetemplete.length > 0 ? combinetemplete : templete,
-      text: convert(combinetemplete.length > 0 ? combinetemplete : templete),
+      html: this.message,
+      text: convert(this.message),
     };
     //create a tranport and send email
     await this.createTransport().sendMail(mailOptions);
   }
-
+  async sendBooking() {
+    await this.send("Booking comfirmation");
+  }
   async sendWelcome() {
     await this.send(welcomeTemplete, "Welcome to Darwich Family!");
   }
