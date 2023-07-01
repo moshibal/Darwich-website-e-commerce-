@@ -16,10 +16,12 @@ import {
   getUserById,
 } from "../controllers/user.js";
 import { auth, restrict } from "../middleware/auth.js";
+import { subscribe } from "../controllers/subcribtion.js";
 const router = express.Router();
 //normal signup and login
 router.post("/signup", signup);
 router.post("/login", login);
+router.post("/subscribe", subscribe);
 router.get("/logout", logout);
 router.get("/me", auth, getMe);
 //forgot and reset password

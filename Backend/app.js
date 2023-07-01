@@ -13,14 +13,13 @@ import cookieParser from "cookie-parser";
 import path from "path";
 const __dirname = path.resolve();
 
-// importing app modules
+// importing app modules/ Routers
 import productRouter from "./routes/product.js";
 import userRouter from "./routes/user.js";
 import orderRouter from "./routes/order.js";
 import uploadRouter from "./routes/uploadRoute.js";
 import bookingRouter from "./routes/booking.js";
 import vibeRegistrationRouter from "./routes/registrationVibe.js";
-import { subscribtionModel } from "./models/subscribtion.js";
 
 const app = express();
 //db connnection
@@ -31,9 +30,7 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-
 app.use(cors());
-
 app.use(helmet());
 const limiter = rateLimit({
   max: 1000,
@@ -41,7 +38,6 @@ const limiter = rateLimit({
   message: "Too many request from this ip, Please try after 1 hour",
 });
 app.use(limiter);
-
 app.use(express.json({ limit: "20kb" }));
 app.use(cookieParser());
 //data sanization against noSQL query injection
@@ -52,46 +48,15 @@ app.use(xss());
 app.use(hpp());
 //server static files
 app.use("/api/uploads", express.static(__dirname + "/uploads"));
-// app.use(express.static(path.join(__dirname, "build")));
-//  Serve the main HTML file for all routes
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
 
 // ALL Routers
-// app.get("/api/config/paypal", (req, res) => {
-//   res.send({ clientID: process.env.PAYPAL_CLIENT_ID });
-// });
-app.post("/api/subscribtion", async (req, res, next) => {
-  try {
-    const email = req.body.email;
-    const emailExist = await subscribtionModel.findOne({ email: email });
-
-    if (emailExist) {
-      return next(new AppError("you are already subscribed. Thank You..", 400));
-    } else {
-      const emailcreated = await subscribtionModel.create({ email: email });
-      if (emailcreated) {
-        res.status(200).json({
-          message:
-            "subscribed to darwich.You will be notified for any updates.",
-        });
-      }
-    }
-  } catch (error) {
-    next(error);
-  }
-});
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/vibeRigistration", vibeRegistrationRouter);
-// Serve the main HTML file for all routes
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+
 app.all("*", (req, res, next) => {
   next(
     new AppError(
