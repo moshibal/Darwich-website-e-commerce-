@@ -5,9 +5,9 @@ import AppError from "../utilities/appError.js";
 import Email from "../utilities/email.js";
 
 //configuration for sms
-const accountSid = process.env.TWILIO_SID;
-const authToken = process.env.TWILIO_TOKEN;
-const client = twilio(accountSid, authToken);
+// const accountSid = process.env.TWILIO_SID;
+// const authToken = process.env.TWILIO_TOKEN;
+// const client = twilio(accountSid, authToken);
 
 //get all bookings
 export const getAllBookings = async (req, res, next) => {
@@ -23,9 +23,15 @@ export const postBooking = async (req, res, next) => {
   try {
     const { name, email, phone, date, message } = req.body;
 
-    const bookingObject = { name, email, phone, message, date };
+    const bookingObject = {
+      name,
+      email,
+      phone,
+      message,
+      date,
+    };
 
-    //simple check email and name check
+    //simple check email
     const booking = await bookingModel.findOne({ email: req.body.email });
     if (booking) {
       const currentDate = new Date();
@@ -41,6 +47,33 @@ export const postBooking = async (req, res, next) => {
       }
     } else {
       const bookingDetail = await bookingModel.create(bookingObject);
+      const bookingComformation = `<!DOCTYPE html>
+      <html>
+      <head>
+          <title>New Booking Has Been Made - Dance and Vibes</title>
+      </head>
+      <body>
+          <h1>New Booking</h1>
+          <p>Dear GrooveandVibes Team,</p>
+          
+          <p>There has been a new booking made. Please check your admin page for more information! <a href="https://grooveandvibes.com.au">Click here to view the details</a></p>
+
+          
+          <p>Booking Details:</p>
+          <ul>
+              <li><strong>Date:</strong> ${bookingDetail.name}</li>
+              <li><strong>Date:</strong> ${bookingDetail.date}</li>
+              <li><strong>Location:</strong> 491 Princes Highway Rockdale,Sydney</li>
+                 
+          </ul>
+          
+          <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
+          
+          <p>Best regards,</p>
+          <p>The Dance and Vibes Team</p>
+      </body>
+      </html>`;
+
       const bookingComformationTemplete = `<!DOCTYPE html>
       <html>
       <head>
@@ -65,19 +98,25 @@ export const postBooking = async (req, res, next) => {
           <p>The Dance and Vibes Team</p>
       </body>
       </html>`;
-      if (bookingComformationTemplete) {
-        const email = new Email(bookingDetail, "", bookingComformationTemplete);
+      if (bookingDetail) {
+        //to individual
+        const email = new Email(bookingDetail, bookingComformationTemplete);
         await email.sendBooking();
-        await client.messages.create({
-          to: process.env.MY_NUMBER,
-          from: process.env.TWILIO_PHONE,
-          body: `Booking has been made form ${name} for ${date}.Please check your admin page. Thank You😘`,
-        });
+        //for admin
+        const adminEmail = new Email(bookingDetail, bookingComformation, true);
+        await adminEmail.sendBooking();
+        //for messaging
+        // await client.messages.create({
+        //   to: process.env.MY_NUMBER,
+        //   from: process.env.TWILIO_PHONE,
+        //   body: `Booking has been made form ${name} for ${date}.Please check your admin page. Thank You`,
+        // });
 
         res.status(201).json({ message: "Booking made successfully." });
       }
     }
   } catch (error) {
+    console.log(error);
     next(new AppError(error.message, 404));
   }
 };
