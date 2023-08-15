@@ -46,6 +46,7 @@ export const signup = asyncHandler(async (req, res, next) => {
 });
 export const login = asyncHandler(async (req, res, next) => {
   //check if email and password
+
   const { email, password } = req.body;
   if (!email || !password) {
     return next(new AppError("please provide email and password", 401));

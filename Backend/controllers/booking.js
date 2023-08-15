@@ -1,4 +1,4 @@
-import twilio from "twilio";
+// import twilio from "twilio";
 import bookingModel from "../models/booking.js";
 import registerVibeModel from "../models/vibeRegister.js";
 import AppError from "../utilities/appError.js";

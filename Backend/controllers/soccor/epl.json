@@ -1,0 +1,76 @@
+[
+  {
+    "league": "Premier League",
+    "name": "Manchester City",
+    "teamID": 50,
+    "matches": [
+      {
+        "awayName": "Arsenal",
+        "homeName": "Manchester City",
+        "shotsOnTargetHome": 4,
+        "shotsOnTargetAway": 5,
+        "goalHome": 1,
+        "goalAway": 1,
+        "cornorHome": 6,
+        "cornorAway": 5
+      },
+      {
+        "awayName": "Atletico",
+        "homeName": "Manchester City",
+        "shotsOnTargetHome": 7,
+        "shotsOnTargetAway": 5,
+        "goalHome": 1,
+        "goalAway": 2,
+        "cornorHome": 6,
+        "cornorAway": 3
+      },
+      {
+        "awayName": "Burnley",
+        "homeName": "Manchester City",
+        "shotsOnTargetHome": 8,
+        "shotsOnTargetAway": 1,
+        "goalHome": 3,
+        "goalAway": 0,
+        "cornorHome": 5,
+        "cornorAway": 6
+      }
+    ]
+  },
+  {
+    "league": "Premier League",
+    "name": "Burnley",
+    "teamID": 44,
+    "matches": [
+      {
+        "awayName": "Mainz",
+        "homeName": "Burnley",
+        "shotsOnTargetHome": 4,
+        "shotsOnTargetAway": 2,
+        "goalHome": 0,
+        "goalAway": 1,
+        "cornorHome": 4,
+        "cornorAway": 7
+      },
+      {
+        "awayName": "Betis",
+        "homeName": "Burnley",
+        "shotsOnTargetHome": 4,
+        "shotsOnTargetAway": 3,
+        "goalHome": 1,
+        "goalAway": 1,
+        "cornorHome": 7,
+        "cornorAway": 7
+      },
+      {
+        "homeName": "Burnley",
+        "awayName": "Manchester City",
+        "shotsOnTargetHome": 8,
+        "shotsOnTargetAway": 1,
+        "goalHome": 3,
+        "goalAway": 0,
+        "cornorHome": 5,
+        "cornorAway": 6
+      }
+    ]
+  }
+]

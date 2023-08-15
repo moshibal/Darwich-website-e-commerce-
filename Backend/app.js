@@ -20,6 +20,7 @@ import orderRouter from "./routes/order.js";
 import uploadRouter from "./routes/uploadRoute.js";
 import bookingRouter from "./routes/booking.js";
 import vibeRegistrationRouter from "./routes/registrationVibe.js";
+import soccorRouter from "./routes/soccor/soccor.js";
 
 const app = express();
 //db connnection
@@ -56,6 +57,7 @@ app.use("/api/orders", orderRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/vibeRigistration", vibeRegistrationRouter);
+app.use("/api/soccor", soccorRouter);
 
 app.all("*", (req, res, next) => {
   next(
