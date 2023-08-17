@@ -1,7 +1,5 @@
 import express from "express";
 import {
-  addLeague,
-  addTeam,
   calculatePrediction,
   getAllTeams,
   updateTeamMatch,
