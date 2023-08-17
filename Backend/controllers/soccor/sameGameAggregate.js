@@ -35,6 +35,8 @@ import AppError from "../../utilities/appError.js";
 //     console.error("Error while scraping:", error.message);
 //   }
 // }
+
+//returns the aggregate of last 5 matches for the same team
 export async function sameGameAggregate(fixtureId, next) {
   const options = {
     method: "GET",
@@ -51,7 +53,6 @@ export async function sameGameAggregate(fixtureId, next) {
       data: { response },
     } = await axios.request(options);
     if (!response) return next(new AppError("No response for h2h data", 404));
-    console.log(response[0].h2h);
     const matches = response[0].h2h;
     let sumHomeGoals = 0;
     let sumAwayGoals = 0;

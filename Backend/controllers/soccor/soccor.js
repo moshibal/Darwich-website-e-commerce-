@@ -5,31 +5,55 @@ import { sameGameAggregate } from "./sameGameAggregate.js";
 
 // @route /api/epl
 export const getAllTeams = async (req, res, next) => {
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => {
+    delete queryObj[el];
+  });
   try {
-    const teams = await eplModel.find();
-    res.status(200).json({ message: "success", data: teams });
+    const teams = await eplModel.find(queryObj);
+    res
+      .status(200)
+      .json({ message: "success", length: teams.length, data: teams });
   } catch (error) {
     next(new AppError(error.message, 500));
   }
 };
 
 // @route /api/epl
-export const postMatch = async (req, res, next) => {
-  try {
-    const team = await eplModel.create(req.body);
-    res.status(201).json({ message: "success", data: team });
-  } catch (error) {
-    next(new AppError(error.message, 500));
-  }
-};
+// export const addTeam = async (req, res, next) => {
+//   try {
+//     const team = await eplModel.create(req.body);
+//     res.status(201).json({ message: "success", data: team });
+//   } catch (error) {
+//     next(new AppError(error.message, 500));
+//   }
+// };
+// export const addLeague = async (req, res, next) => {
+//   try {
+//     const epl = await eplModel.find({ league: "Premier League" });
+//     // Loop through each team and update the "leagueID" property
+//     for (const team of epl) {
+//       team.leagueID = 39; // Set the leagueID to 39
+//     }
 
-// @route /api/epl/:id
-export const updateEplTeam = async (req, res, next) => {
-  const teamId = req.params.teamId;
-  const latestTeamMatch = req.body;
+//     // Save the updated documents
+//     const updatedEplTeams = await Promise.all(epl.map((team) => team.save()));
+
+//     res.status(201).json({ message: "success", data: updatedEplTeams });
+//   } catch (error) {
+//     next(new AppError(error.message, 500));
+//   }
+// };
+
+// @route /api/soccor/:teamId
+// update matches array
+export const updateTeamMatch = async (req, res, next) => {
+  const updatingObj = req.body;
+  const teamId = Number(req.params.teamId);
 
   try {
-    const team = await eplModel.findById(teamId);
+    const team = await eplModel.findOne({ teamID: teamId });
     if (!team) {
       return next(new AppError("No team with that id", 404));
     }
@@ -37,9 +61,9 @@ export const updateEplTeam = async (req, res, next) => {
       // If the length is 3, remove the first object from the array
       team.matches.shift();
     }
-    team.matches.push(latestTeamMatch);
+    team.matches.push(updatingObj);
     await team.save();
-    res.status(204).json({ message: "Team Updated  successfully." });
+    res.status(200).json({ message: "success" });
   } catch (err) {
     next(new AppError(err.message, 500));
   }

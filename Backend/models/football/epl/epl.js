@@ -13,6 +13,7 @@ const differentTeamSchema = new mongoose.Schema({
 
 const eplSchema = new mongoose.Schema({
   league: { type: String },
+  leagueID: { type: Number },
   name: {
     type: String,
     required: true,
