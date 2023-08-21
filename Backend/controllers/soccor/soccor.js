@@ -20,15 +20,52 @@ export const getAllTeams = async (req, res, next) => {
   }
 };
 
-// @route /api/epl
-// export const addTeam = async (req, res, next) => {
-//   try {
-//     const team = await eplModel.create(req.body);
-//     res.status(201).json({ message: "success", data: team });
-//   } catch (error) {
-//     next(new AppError(error.message, 500));
-//   }
-// };
+//@route /api/epl
+export const addTeam = async (req, res, next) => {
+  const options = {
+    method: "GET",
+    url: "https://api-football-v1.p.rapidapi.com/v3/standings",
+    params: {
+      season: "2023",
+      league: "135",
+    },
+    headers: {
+      "X-RapidAPI-Key": process.env.XRapidAPIKey,
+      "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+    },
+  };
+
+  try {
+    const {
+      data: { response },
+    } = await axios.request(options);
+    const listOfTeam = [];
+    const teamObject = {
+      league: "Serie A",
+      leagueID: 135,
+      // name: ,
+      // teamID: ,
+      matches: [],
+    };
+    const listofTeams = response[0].league.standings[0];
+    listofTeams.forEach((team) => {
+      if (team && team.team) {
+        console.log(team);
+        const newTeam = {
+          ...teamObject,
+          name: team.team.name,
+          teamID: team.team.id,
+        };
+        listOfTeam.push(newTeam);
+      }
+    });
+
+    const team = await eplModel.create(listOfTeam);
+    res.status(201).json({ message: "success", data: listOfTeam });
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
+};
 // export const addLeague = async (req, res, next) => {
 //   try {
 //     const epl = await eplModel.find({ league: "Premier League" });
@@ -230,8 +267,9 @@ export const calculatePrediction = async (req, res, next) => {
     // Partition the data into two arrays: above 1.5 sameTeamAggregate and the rest
     const [above15SameTeam, restOfData] = predictedmatches.reduce(
       (acc, item) => {
-        const sameTeam = parseFloat(item.sameTeamAggregate);
-        if (sameTeam > 1.5) {
+        const sameTeamAgg = parseFloat(item.sameTeamAggregate);
+        const shotsOnTargetAggregate = parseFloat(item.shotsOnTargetAggregate);
+        if (sameTeamAgg >= 1.3 && shotsOnTargetAggregate >= 4) {
           acc[0].push(item);
         } else {
           acc[1].push(item);
@@ -247,11 +285,14 @@ export const calculatePrediction = async (req, res, next) => {
         parseFloat(b.shotsOnTargetAggregate) -
         parseFloat(a.shotsOnTargetAggregate)
     );
+    //sort rest of data based on shots shotsOnTargetAggregate in descending order
 
-    // Concatenate the sorted above 1.5 sameTeamAggregate data with the rest of the data
-    const finalData = sortedAbove15SameTeam.concat(restOfData);
-
-    res.json(finalData);
+    const sortedRestOfData = restOfData.sort(
+      (a, b) =>
+        parseFloat(b.shotsOnTargetAggregate) -
+        parseFloat(a.shotsOnTargetAggregate)
+    );
+    res.json([sortedAbove15SameTeam, sortedRestOfData]);
   } catch (error) {
     next(new AppError(error.message, 500));
   }
