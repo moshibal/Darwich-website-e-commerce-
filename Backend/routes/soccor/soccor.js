@@ -8,7 +8,7 @@ import {
 import { auth, restrict } from "../../middleware/auth.js";
 
 const router = express.Router();
-router.get("/", auth, restrict, getAllTeams);
+router.get("/", getAllTeams);
 router.post("/", auth, restrict, addTeam);
 // router.patch("/update", addLeague);
 router.get("/predict/:leagueId", auth, restrict, calculatePrediction);
