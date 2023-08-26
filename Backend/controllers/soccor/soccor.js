@@ -247,34 +247,29 @@ export const calculatePrediction = async (req, res, next) => {
       )
     );
 
-    //sorting the matches based on my predict
-    predictedmatches.sort((a, b) => {
-      const sameTeamDiff =
-        parseFloat(b.sameTeamAggregate) - parseFloat(a.sameTeamAggregate);
-      if (sameTeamDiff !== 0) {
-        return sameTeamDiff;
-      }
+    // //sorting the matches based on my predict
+    // predictedmatches.sort((a, b) => {
+    //   const sameTeamDiff =
+    //     parseFloat(b.sameTeamAggregate) - parseFloat(a.sameTeamAggregate);
+    //   if (sameTeamDiff !== 0) {
+    //     return sameTeamDiff;
+    //   }
 
-      const shotsOnTargetDiff =
-        parseFloat(b.shotsOnTargetAggregate) -
-        parseFloat(a.shotsOnTargetAggregate);
-      if (shotsOnTargetDiff !== 0) {
-        return shotsOnTargetDiff;
-      }
+    //   const shotsOnTargetDiff =
+    //     parseFloat(b.shotsOnTargetAggregate) -
+    //     parseFloat(a.shotsOnTargetAggregate);
+    //   if (shotsOnTargetDiff !== 0) {
+    //     return shotsOnTargetDiff;
+    //   }
 
-      return parseFloat(b.goalAggregate) - parseFloat(a.goalAggregate);
-    });
+    //   return parseFloat(b.goalAggregate) - parseFloat(a.goalAggregate);
+    // });
     // Partition the data into two arrays: above 1.5 sameTeamAggregate and the rest
     const [above15SameTeam, restOfData] = predictedmatches.reduce(
       (acc, item) => {
-        const sameTeamAgg = parseFloat(item.sameTeamAggregate);
         const shotsOnTargetAggregate = parseFloat(item.shotsOnTargetAggregate);
         const teamAggregate = parseFloat(item.goalAggregate);
-        if (
-          sameTeamAgg >= 1.3 &&
-          shotsOnTargetAggregate >= 4.5 &&
-          teamAggregate >= 1.5
-        ) {
+        if (shotsOnTargetAggregate >= 4.5 && teamAggregate >= 1.5) {
           acc[0].push(item);
         } else {
           acc[1].push(item);
