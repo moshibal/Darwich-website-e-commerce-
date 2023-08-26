@@ -269,7 +269,12 @@ export const calculatePrediction = async (req, res, next) => {
       (acc, item) => {
         const sameTeamAgg = parseFloat(item.sameTeamAggregate);
         const shotsOnTargetAggregate = parseFloat(item.shotsOnTargetAggregate);
-        if (sameTeamAgg >= 1.3 && shotsOnTargetAggregate >= 4) {
+        const teamAggregate = parseFloat(item.goalAggregate);
+        if (
+          sameTeamAgg >= 1.3 &&
+          shotsOnTargetAggregate >= 4.5 &&
+          teamAggregate >= 1.5
+        ) {
           acc[0].push(item);
         } else {
           acc[1].push(item);
