@@ -58,14 +58,14 @@ export async function sameGameAggregate(fixtureId, next) {
     let sumAwayGoals = 0;
 
     // Loop through the first five objects
-    for (let i = 0; i < Math.min(5, matches.length); i++) {
+    for (let i = 0; i < Math.min(3, matches.length); i++) {
       const match = matches[i];
       if (match.goals) {
         sumHomeGoals += match.goals.home;
         sumAwayGoals += match.goals.away;
       }
     }
-    return (sumAwayGoals + sumHomeGoals) / 10;
+    return (sumAwayGoals + sumHomeGoals) / 6;
   } catch (error) {
     next(new AppError(error.message, 500));
   }
