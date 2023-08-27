@@ -42,7 +42,13 @@ class Email {
   }
 
   async sendBooking() {
-    await this.send("Booking comfirmation");
+    await this.send("Booking Confirmation");
+  }
+  async sendRegistration() {
+    await this.send("Registration Confirmation");
+  }
+  async sendClassUpdate() {
+    await this.send("Class Update");
   }
 }
 

@@ -3,6 +3,12 @@ import bookingModel from "../models/booking.js";
 import registerVibeModel from "../models/vibeRegister.js";
 import AppError from "../utilities/appError.js";
 import Email from "../utilities/email.js";
+import {
+  bookingComformationAdmin,
+  bookingComformationIndivisual,
+  registrationTemplate,
+  classremainingTemplete,
+} from "../utilities/emailTemplate.js";
 
 //configuration for sms
 // const accountSid = process.env.TWILIO_SID;
@@ -47,57 +53,14 @@ export const postBooking = async (req, res, next) => {
       }
     } else {
       const bookingDetail = await bookingModel.create(bookingObject);
-      const bookingComformation = `<!DOCTYPE html>
-      <html>
-      <head>
-          <title>New Booking Has Been Made - Dance and Vibes</title>
-      </head>
-      <body>
-          <h1>New Booking</h1>
-          <p>Dear GrooveandVibes Team,</p>
-          
-          <p>There has been a new booking made. Please check your admin page for more information! <a href="https://grooveandvibes.com.au">Click here to view the details</a></p>
 
-          
-          <p>Booking Details:</p>
-          <ul>
-              <li><strong>Date:</strong> ${bookingDetail.name}</li>
-              <li><strong>Date:</strong> ${bookingDetail.date}</li>
-              <li><strong>Location:</strong> 491 Princes Highway Rockdale,Sydney</li>
-                 
-          </ul>
-          
-          <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
-          
-          <p>Best regards,</p>
-          <p>The Dance and Vibes Team</p>
-      </body>
-      </html>`;
+      //returns email template for admin
+      const bookingComformation = bookingComformationAdmin(bookingDetail);
 
-      const bookingComformationTemplete = `<!DOCTYPE html>
-      <html>
-      <head>
-          <title>Booking Confirmation - Dance and Vibes</title>
-      </head>
-      <body>
-          <h1>Booking Confirmation</h1>
-          <p>Dear ${bookingDetail.name},</p>
-          
-          <p>Thank you for booking with Dance and Vibes. We are excited to have you join us for an amazing dance experience!</p>
-          
-          <p>Booking Details:</p>
-          <ul>
-              <li><strong>Date:</strong> ${bookingDetail.date}</li>
-              <li><strong>Location:</strong> 491 Princes Highway Rockdale,Sydney</li>
-                 
-          </ul>
-          
-          <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
-          
-          <p>Best regards,</p>
-          <p>The Dance and Vibes Team</p>
-      </body>
-      </html>`;
+      //returns email template for individuals
+      const bookingComformationTemplete =
+        bookingComformationIndivisual(bookingObject);
+
       if (bookingDetail) {
         //to individual
         const email = new Email(bookingDetail, bookingComformationTemplete);
@@ -148,8 +111,14 @@ export const postRegistration = async (req, res, next) => {
       selectedClass,
       selectedGroup,
     };
-    const response = await registerVibeModel.create(registerObject);
-    if (response) {
+    const registration = await registerVibeModel.create(registerObject);
+    if (registration) {
+      //registration template
+      const Template = registrationTemplate(registration);
+      //to individual
+      const email = new Email(registration, Template);
+      await email.sendRegistration();
+
       res.status(201).json({ message: "new student added." });
     }
   } catch (error) {
@@ -186,10 +155,16 @@ export const updateAttendence = async (req, res, next) => {
         student.attendance = 0;
       } else {
         student.attendance += 1;
+        if (student.attendance === 8) {
+          //class remaining template
+          const Template = classremainingTemplete(student);
+          //to individual
+          const email = new Email(student, Template);
+          await email.sendClassUpdate();
+        }
       }
       student.classes = student.classes;
       await student.save();
-
       res.json({ message: "Successfuly updated the attendance" });
     }
   } catch (error) {
