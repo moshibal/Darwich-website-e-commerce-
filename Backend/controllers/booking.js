@@ -27,14 +27,24 @@ export const getAllBookings = async (req, res, next) => {
 //post bookings
 export const postBooking = async (req, res, next) => {
   try {
-    const { name, email, phone, date, message } = req.body;
-
+    const { name, email, phone, date, message, selectedClass, selectedGroup } =
+      req.body;
+    //booking
     const bookingObject = {
       name,
       email,
       phone,
       message,
       date,
+    };
+    //register
+    const registerObject = {
+      name,
+      email,
+      phone,
+      address,
+      selectedClass,
+      selectedGroup,
     };
 
     //simple check email
@@ -62,9 +72,15 @@ export const postBooking = async (req, res, next) => {
         bookingComformationIndivisual(bookingObject);
 
       if (bookingDetail) {
-        //to individual
-        const email = new Email(bookingDetail, bookingComformationTemplete);
-        await email.sendBooking();
+        //register for new booking user
+        const registration = await registerVibeModel.create(registerObject);
+        if (registration) {
+          //registration template
+          const Template = registrationTemplate(registration);
+          //to individual
+          const email = new Email(registration, Template);
+          await email.sendRegistration();
+        }
         //for admin
         const adminEmail = new Email(bookingDetail, bookingComformation, true);
         await adminEmail.sendBooking();
@@ -75,11 +91,10 @@ export const postBooking = async (req, res, next) => {
         //   body: `Booking has been made form ${name} for ${date}.Please check your admin page. Thank You`,
         // });
 
-        res.status(201).json({ message: "Booking made successfully." });
+        res.status(201).json({ message: "Successfully Registered." });
       }
     }
   } catch (error) {
-    console.log(error);
     next(new AppError(error.message, 404));
   }
 };
