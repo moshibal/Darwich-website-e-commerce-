@@ -42,7 +42,6 @@ export const postBooking = async (req, res, next) => {
       name,
       email,
       phone,
-      address,
       selectedClass,
       selectedGroup,
     };
