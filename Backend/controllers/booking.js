@@ -66,10 +66,6 @@ export const postBooking = async (req, res, next) => {
       //returns email template for admin
       const bookingComformation = bookingComformationAdmin(bookingDetail);
 
-      //returns email template for individuals
-      const bookingComformationTemplete =
-        bookingComformationIndivisual(bookingObject);
-
       if (bookingDetail) {
         //register for new booking user
         const registration = await registerVibeModel.create(registerObject);
@@ -168,8 +164,9 @@ export const updateAttendence = async (req, res, next) => {
       if (req.body.reset === 0) {
         student.attendance = 0;
       } else {
+        const selectClass = Number(student.selectedClass.split(" ")[0]);
         student.attendance += 1;
-        if (student.attendance === 8) {
+        if (selectClass - student.attendance === 2) {
           //class remaining template
           const Template = classremainingTemplete(student);
           //to individual

@@ -62,7 +62,7 @@ export const registrationTemplate = (registration) => {
         <h1>Registration Confirmation</h1>
         <p>Dear ${registration.name},</p>
         
-        <p>Welcome to Dance and Vibes! We're thrilled to have you join our community of dancers and enthusiasts.</p>
+        <p>Welcome to Groove&Vibes! We're thrilled to have you join our community of dancers and enthusiasts.</p>
         
         <p>Your Registration Details:</p>
         <ul>
