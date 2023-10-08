@@ -164,15 +164,15 @@ const calculateEveryAspects = async (next, matchObject) => {
     }
 
     //fetch also the same game aggregate goal.
-    const sameTeamAggregate = await sameGameAggregate(
-      matchObject.fixtureId,
-      next
-    );
-    if (!sameTeamAggregate) {
-      return next(
-        new AppError(`Error in fetching the same team aggregate`, 404)
-      );
-    }
+    // const sameTeamAggregate = await sameGameAggregate(
+    //   matchObject.fixtureId,
+    //   next
+    // );
+    // if (!sameTeamAggregate) {
+    //   return next(
+    //     new AppError(`Error in fetching the same team aggregate`, 404)
+    //   );
+    // }
     //initiate some variables to store value
     let shotsOnTargetHomeSum = 0;
     let goalHomeSum = 0;
@@ -198,7 +198,7 @@ const calculateEveryAspects = async (next, matchObject) => {
         (shotsOnTargetHomeSum + shotsOnTargetAwaySum) /
         6
       ).toFixed(2),
-      sameTeamAggregate: sameTeamAggregate.toFixed(2),
+      // sameTeamAggregate: sameTeamAggregate.toFixed(2),
     };
   } catch (error) {
     next(new AppError(error.message, 500));
