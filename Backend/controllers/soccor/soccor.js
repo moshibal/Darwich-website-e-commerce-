@@ -107,7 +107,7 @@ export const updateTeamMatch = async (req, res, next) => {
 };
 
 //get all the fixtures
-export const getFixture = async (leagueID, next) => {
+export const getFixture = async (req, res, leagueID, next) => {
   // Create a new Date object for the current date
   const today = new Date();
 
@@ -118,15 +118,19 @@ export const getFixture = async (leagueID, next) => {
   const toDay = String(today.getDate() + 1).padStart(2, "0");
 
   // Combine the components in the desired format
-  const fromDate = year + "-" + month + "-" + day;
-  const toDate = year + "-" + month + "-" + toDay;
+  // const fromDate = year + "-" + month + "-" + day;
+  // const toDate = year + "-" + month + "-" + toDay;
+  // console.log("fromDate", fromDate);
+
+  const fromDate = "2024-08-18";
+  const toDate = "2024-08-19";
 
   const options = {
     method: "GET",
     url: "https://api-football-v1.p.rapidapi.com/v3/fixtures",
     params: {
       league: leagueID,
-      season: "2023",
+      season: "2024",
       from: fromDate,
       to: toDate,
     },
@@ -140,7 +144,6 @@ export const getFixture = async (leagueID, next) => {
     const {
       data: { response },
     } = await axios.request(options);
-
     return response;
   } catch (error) {
     next(new AppError(error.message, 500));
