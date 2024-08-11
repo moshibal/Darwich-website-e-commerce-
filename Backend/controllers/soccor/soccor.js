@@ -105,9 +105,52 @@ export const updateTeamMatch = async (req, res, next) => {
     next(new AppError(err.message, 500));
   }
 };
+// //for testing only
+// export const getFixtures = async (req, res, next) => {
+//   // Create a new Date object for the current date
+//   const today = new Date();
 
+//   // Extract the year, month, and day components
+//   const year = today.getFullYear();
+//   const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+//   const day = String(today.getDate()).padStart(2, "0");
+//   const toDay = String(today.getDate() + 1).padStart(2, "0");
+
+//   // Combine the components in the desired format
+//   // const fromDate = year + "-" + month + "-" + day;
+//   // const toDate = year + "-" + month + "-" + toDay;
+//   // console.log("fromDate", fromDate);
+
+//   const fromDate = "2024-08-18";
+//   const toDate = "2024-08-19";
+
+//   const options = {
+//     method: "GET",
+//     url: "https://api-football-v1.p.rapidapi.com/v3/fixtures",
+//     params: {
+//       league: 39,
+//       season: "2024",
+//       from: fromDate,
+//       to: toDate,
+//     },
+//     headers: {
+//       "X-RapidAPI-Key": process.env.XRapidAPIKey,
+//       "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+//     },
+//   };
+
+//   try {
+//     const {
+//       data: { response },
+//     } = await axios.request(options);
+//     // return response;
+//     res.send(response);
+//   } catch (error) {
+//     next(new AppError(error.message, 500));
+//   }
+// };
 //get all the fixtures
-export const getFixture = async (req, res, leagueID, next) => {
+export const getFixture = async (leagueID, next) => {
   // Create a new Date object for the current date
   const today = new Date();
 
@@ -118,19 +161,15 @@ export const getFixture = async (req, res, leagueID, next) => {
   const toDay = String(today.getDate() + 1).padStart(2, "0");
 
   // Combine the components in the desired format
-  // const fromDate = year + "-" + month + "-" + day;
-  // const toDate = year + "-" + month + "-" + toDay;
-  // console.log("fromDate", fromDate);
-
-  const fromDate = "2024-08-18";
-  const toDate = "2024-08-19";
+  const fromDate = year + "-" + month + "-" + day;
+  const toDate = year + "-" + month + "-" + toDay;
 
   const options = {
     method: "GET",
     url: "https://api-football-v1.p.rapidapi.com/v3/fixtures",
     params: {
       league: leagueID,
-      season: "2023",
+      season: "2024",
       from: fromDate,
       to: toDate,
     },

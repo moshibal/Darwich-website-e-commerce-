@@ -3,7 +3,6 @@ import {
   addTeam,
   calculatePrediction,
   getAllTeams,
-  getFixture,
   updateTeamMatch,
 } from "../../controllers/soccor/soccor.js";
 import { auth, restrict } from "../../middleware/auth.js";
