@@ -130,7 +130,7 @@ export const getFixture = async (req, res, leagueID, next) => {
     url: "https://api-football-v1.p.rapidapi.com/v3/fixtures",
     params: {
       league: leagueID,
-      season: "2024",
+      season: "2023",
       from: fromDate,
       to: toDate,
     },
