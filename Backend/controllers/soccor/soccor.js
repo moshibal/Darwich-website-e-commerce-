@@ -19,15 +19,63 @@ export const getAllTeams = async (req, res, next) => {
     next(new AppError(error.message, 500));
   }
 };
+//@route /api/epl/statistic
+export const getStats = async (fixtureId, teamID, next) => {
+  var options = {
+    method: "GET",
+    url: "https://api-football-v1.p.rapidapi.com/v3/fixtures/statistics",
+    params: { fixture: fixtureId },
 
+    headers: {
+      "X-RapidAPI-Key": process.env.XRapidAPIKey,
+      "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+    },
+  };
+
+  try {
+    const {
+      data: { response },
+    } = await axios.request(options);
+    // Function to get "Shots on Goal" and "Total Shots" based on team ID
+    function getTeamStatistics(response, teamId) {
+      const teamData = response.find((item) => item.team.id === Number(teamId));
+
+      if (!teamData) {
+        return "Team ID not found";
+      }
+
+      const shotsOnGoal = teamData.statistics.find(
+        (stat) => stat.type === "Shots on Goal"
+      );
+      const totalShots = teamData.statistics.find(
+        (stat) => stat.type === "Total Shots"
+      );
+
+      return {
+        shotsOnTargetHome:
+          shotsOnGoal && shotsOnGoal.value > 6
+            ? 6
+            : shotsOnGoal
+            ? shotsOnGoal.value
+            : null,
+        totalShots: totalShots ? totalShots.value : null,
+      };
+    }
+
+    const statistics = getTeamStatistics(response, teamID);
+    return statistics;
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
+};
 //@route /api/epl
 export const addTeam = async (req, res, next) => {
   const options = {
     method: "GET",
     url: "https://api-football-v1.p.rapidapi.com/v3/standings",
     params: {
-      season: "2023",
-      league: "135",
+      season: "2024",
+      league: "61",
     },
     headers: {
       "X-RapidAPI-Key": process.env.XRapidAPIKey,
@@ -41,8 +89,8 @@ export const addTeam = async (req, res, next) => {
     } = await axios.request(options);
     const listOfTeam = [];
     const teamObject = {
-      league: "Serie A",
-      leagueID: 135,
+      league: "Ligue 1",
+      leagueID: 61,
       // name: ,
       // teamID: ,
       matches: [],
@@ -50,7 +98,6 @@ export const addTeam = async (req, res, next) => {
     const listofTeams = response[0].league.standings[0];
     listofTeams.forEach((team) => {
       if (team && team.team) {
-        console.log(team);
         const newTeam = {
           ...teamObject,
           name: team.team.name,
@@ -85,9 +132,16 @@ export const addTeam = async (req, res, next) => {
 
 // @route /api/soccor/:teamId
 // update matches array
-export const updateTeamMatch = async (req, res, next) => {
-  const updatingObj = req.body;
-  const teamId = Number(req.params.teamId);
+export const updateTeamMatch = async (
+  req,
+  res,
+  updatingObject,
+  teamID,
+  next
+) => {
+  const updatingObj = req.body.goalHome ? req.body : updatingObject;
+
+  const teamId = Number(req.params.teamId || teamID);
 
   try {
     const team = await eplModel.findOne({ teamID: teamId });
@@ -105,50 +159,7 @@ export const updateTeamMatch = async (req, res, next) => {
     next(new AppError(err.message, 500));
   }
 };
-// //for testing only
-// export const getFixtures = async (req, res, next) => {
-//   // Create a new Date object for the current date
-//   const today = new Date();
 
-//   // Extract the year, month, and day components
-//   const year = today.getFullYear();
-//   const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-//   const day = String(today.getDate()).padStart(2, "0");
-//   const toDay = String(today.getDate() + 1).padStart(2, "0");
-
-//   // Combine the components in the desired format
-//   // const fromDate = year + "-" + month + "-" + day;
-//   // const toDate = year + "-" + month + "-" + toDay;
-//   // console.log("fromDate", fromDate);
-
-//   const fromDate = "2024-08-18";
-//   const toDate = "2024-08-19";
-
-//   const options = {
-//     method: "GET",
-//     url: "https://api-football-v1.p.rapidapi.com/v3/fixtures",
-//     params: {
-//       league: 39,
-//       season: "2024",
-//       from: fromDate,
-//       to: toDate,
-//     },
-//     headers: {
-//       "X-RapidAPI-Key": process.env.XRapidAPIKey,
-//       "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
-//     },
-//   };
-
-//   try {
-//     const {
-//       data: { response },
-//     } = await axios.request(options);
-//     // return response;
-//     res.send(response);
-//   } catch (error) {
-//     next(new AppError(error.message, 500));
-//   }
-// };
 //get all the fixtures
 export const getFixture = async (leagueID, next) => {
   // Create a new Date object for the current date
@@ -184,6 +195,75 @@ export const getFixture = async (leagueID, next) => {
       data: { response },
     } = await axios.request(options);
     return response;
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
+};
+//get fixture for whole week matches
+export const getFixtureForUpdate = async (req, res, next) => {
+  // const leagueID = req.body.leagueID;
+  const teamID = req.params.teamID;
+
+  // Create a new Date object for the current date
+  const today = new Date();
+
+  // Extract the year, month, and day components
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(today.getDate() - 7).padStart(2, "0");
+  const toDay = String(today.getDate()).padStart(2, "0");
+
+  // Combine the components in the desired format
+  const fromDate = year + "-" + month + "-" + day;
+  const toDate = year + "-" + month + "-" + toDay;
+
+  const options = {
+    method: "GET",
+    url: "https://api-football-v1.p.rapidapi.com/v3/fixtures",
+    params: {
+      // league: leagueID,
+      team: teamID,
+      season: "2024",
+      from: fromDate,
+      to: toDate,
+    },
+    headers: {
+      "X-RapidAPI-Key": process.env.XRapidAPIKey,
+      "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+    },
+  };
+
+  try {
+    //fetch the fixture data by ID.
+    const {
+      data: { response },
+    } = await axios.request(options);
+    //fixtureID
+    const fixtureId = response[0].fixture.id;
+
+    // Function to get goals by team ID
+    function getTeamInfo() {
+      const match = response[0]; // Assuming you're only dealing with one match in the array
+
+      if (match.teams.home.id === Number(teamID)) {
+        return {
+          goalHome: match.goals.home > 3 ? 3 : match.goals.home,
+          awayName: match.teams.away.name,
+        };
+      } else if (match.teams.away.id === Number(teamID)) {
+        return {
+          goalHome: match.goals.away > 3 ? 3 : match.goals.away,
+          awayName: match.teams.home.name,
+        };
+      } else {
+        return "Team ID not found";
+      }
+    }
+
+    const homeTeamInfo = getTeamInfo();
+    const data = await getStats(fixtureId, teamID);
+    const finalUpdatingObject = { ...homeTeamInfo, ...data };
+    updateTeamMatch(req, res, finalUpdatingObject, teamID, next);
   } catch (error) {
     next(new AppError(error.message, 500));
   }
