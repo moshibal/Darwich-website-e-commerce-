@@ -9,6 +9,7 @@ const differentTeamSchema = new mongoose.Schema({
   goalAway: Number,
   cornorHome: Number,
   cornorAway: Number,
+  fixtureId: { type: Number, default: null }, // New field added here
 });
 
 const eplSchema = new mongoose.Schema({

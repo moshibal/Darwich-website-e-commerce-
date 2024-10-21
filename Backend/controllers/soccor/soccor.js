@@ -155,32 +155,21 @@ export const updateTeamMatch = async (req, res, next) => {
 };
 // @route /api/soccor/:teamId
 // update matches array
-export const updateTeamAutoMatch = async (
-  req,
-  res,
-  updatingObject,
-  teamID,
-  next
-) => {
-  const updatingObj = req.body.goalHome ? req.body : updatingObject;
+export const updateTeamAutoMatch = async (updatingObject, teamID) => {
+  const team = await eplModel.findOne({ teamID });
 
-  const teamId = Number(req.params.hi || teamID);
-
-  try {
-    const team = await eplModel.findOne({ teamID: teamId });
-    if (!team) {
-      return next(new AppError("No team with that id", 404));
-    }
-    if (team.matches.length === 3) {
-      // If the length is 3, remove the first object from the array
-      team.matches.shift();
-    }
-    team.matches.push(updatingObj);
-    await team.save();
-    res.status(200).json({ message: "success" });
-  } catch (err) {
-    next(new AppError(err.message, 500));
+  if (!team) {
+    throw new Error("No team with that ID");
   }
+  // Remove the oldest match
+  if (team.matches.length === 3) {
+    team.matches.shift();
+  }
+  //Add the new match
+  team.matches.push(updatingObject);
+  await team.save();
+
+  return { message: "success" };
 };
 
 //get all the fixtures
@@ -233,7 +222,7 @@ export const getFixtureForUpdate = async (req, res, next) => {
   // Extract the year, month, and day components
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(today.getDate() - 8).padStart(2, "0");
+  const day = String(today.getDate() - 4).padStart(2, "0");
   const toDay = String(today.getDate()).padStart(2, "0");
 
   // Combine the components in the desired format
@@ -263,6 +252,15 @@ export const getFixtureForUpdate = async (req, res, next) => {
     } = await axios.request(options);
     //fixtureID
     const fixtureId = response[0].fixture.id;
+    //fetch the currect data from the database
+    const team = await eplModel.findOne({ teamID: teamID });
+    if (!team) {
+      return next(new AppError("No team with that id", 404));
+    }
+    const lastGameFixtureId = team.matches[2].fixtureId;
+    if (lastGameFixtureId === fixtureId) {
+      return res.status(200).send("Team data is already up-to-date.");
+    }
 
     // Function to get goals by team ID
     function getTeamInfo() {
@@ -285,8 +283,10 @@ export const getFixtureForUpdate = async (req, res, next) => {
 
     const homeTeamInfo = getTeamInfo();
     const data = await getStats(fixtureId, teamID);
-    const finalUpdatingObject = { ...homeTeamInfo, ...data };
-    updateTeamAutoMatch(req, res, finalUpdatingObject, teamID, next);
+    const finalUpdatingObject = { ...homeTeamInfo, ...data, fixtureId };
+    // Call the update function and handle success
+    const result = await updateTeamAutoMatch(teamID, finalUpdatingObject);
+    res.status(201).json(result);
   } catch (error) {
     next(new AppError(error.message, 500));
   }
