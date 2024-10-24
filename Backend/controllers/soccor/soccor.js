@@ -155,7 +155,7 @@ export const updateTeamMatch = async (req, res, next) => {
 };
 // @route /api/soccor/:teamId
 // update matches array
-export const updateTeamAutoMatch = async (updatingObject, teamID) => {
+export const updateTeamAutoMatch = async (teamID, updatingObject) => {
   const team = await eplModel.findOne({ teamID });
 
   if (!team) {
@@ -214,7 +214,7 @@ export const getFixture = async (leagueID, next) => {
 //get fixture for whole week matches
 export const getFixtureForUpdate = async (req, res, next) => {
   // const leagueID = req.body.leagueID;
-  const teamID = req.params.teamID;
+  const teamID = Number(req.params.teamID);
 
   // Create a new Date object for the current date
   const today = new Date();
@@ -222,7 +222,7 @@ export const getFixtureForUpdate = async (req, res, next) => {
   // Extract the year, month, and day components
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(today.getDate() - 4).padStart(2, "0");
+  const day = String(today.getDate() - 6).padStart(2, "0");
   const toDay = String(today.getDate()).padStart(2, "0");
 
   // Combine the components in the desired format
@@ -252,14 +252,16 @@ export const getFixtureForUpdate = async (req, res, next) => {
     } = await axios.request(options);
     //fixtureID
     const fixtureId = response[0].fixture.id;
+
     //fetch the currect data from the database
     const team = await eplModel.findOne({ teamID: teamID });
+
     if (!team) {
       return next(new AppError("No team with that id", 404));
     }
     const lastGameFixtureId = team.matches[2].fixtureId;
     if (lastGameFixtureId === fixtureId) {
-      return res.status(200).send("Team data is already up-to-date.");
+      return res.status(200).send("Team updated already");
     }
 
     // Function to get goals by team ID
