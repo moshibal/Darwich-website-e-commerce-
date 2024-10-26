@@ -222,8 +222,8 @@ export const getFixtureForUpdate = async (req, res, next) => {
   // Extract the year, month, and day components
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(today.getDate() - 6).padStart(2, "0");
-  const toDay = String(today.getDate() - 1).padStart(2, "0");
+  const day = String(today.getDate() - 5).padStart(2, "0");
+  const toDay = String(today.getDate()).padStart(2, "0");
 
   // Combine the components in the desired format
   const fromDate = year + "-" + month + "-" + day;
@@ -251,6 +251,7 @@ export const getFixtureForUpdate = async (req, res, next) => {
       data: { response },
     } = await axios.request(options);
     //fixtureID
+
     const fixtureId = response[0].fixture.id;
 
     //fetch the currect data from the database
@@ -259,7 +260,10 @@ export const getFixtureForUpdate = async (req, res, next) => {
     if (!team) {
       return next(new AppError("No team with that id", 404));
     }
-    const lastGameFixtureId = team.matches[2].fixtureId;
+    const lengthOfMatches = team.matches.length;
+
+    const lastGameFixtureId = team.matches[lengthOfMatches - 1]?.fixtureId;
+
     if (lastGameFixtureId === fixtureId) {
       return res.status(200).send("Team updated already");
     }
