@@ -223,7 +223,7 @@ export const getFixtureForUpdate = async (req, res, next) => {
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
   const day = String(today.getDate() - 6).padStart(2, "0");
-  const toDay = String(today.getDate()).padStart(2, "0");
+  const toDay = String(today.getDate() - 1).padStart(2, "0");
 
   // Combine the components in the desired format
   const fromDate = year + "-" + month + "-" + day;
